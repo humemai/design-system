@@ -22,7 +22,7 @@ The docs source changes show on docs.humem.ai when `deploy-docs` next runs (a ve
 
 - [x] GitHub organization: avatar, description "Open source memory systems for agentic AI" (was "A Machine With Human-Like Memory Systems"), and links to LinkedIn, X and Hugging Face.
 - [x] GitHub social preview on all 18 public repositories (`github-social-1280x640.png`), each checked against the file.
-- [x] LinkedIn page `humemai`: logo and cover. The tagline "Machines with human-like memory" is Taewoon's and stays.
+- [x] LinkedIn page `humemai`: logo, cover, and the About text (was "A Machine With Human-Like Memory Systems"; now the site's description of HumemAI and its projects). The tagline "Machines with human-like memory" is Taewoon's and stays.
 - [x] X `@humem_ai`: avatar, header, and bio "Machines with human-like memory. Open source memory systems for agentic AI."
 - [x] Hugging Face organization `humemai`: avatar.
 
