@@ -28,6 +28,7 @@ fonts/              the two brand fonts (SIL Open Font License), used to outline
 scripts/build.py    generates logo/ and export/
 scripts/check.py    checks the tokens, every contrast pairing, and the export sizes
 scripts/vendor-into.sh  copies the system into a site, with a pinned VERSION.md
+scripts/recolor.py  converts an illustration drawn in the 2024 teal and coral palette to oxblood and rose
 ```
 
 Nothing in `logo/` or `export/` is edited by hand. Change `scripts/build.py`, then:
