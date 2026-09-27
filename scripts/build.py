@@ -209,8 +209,16 @@ def motif(x, y, scale, color, width=6):
             f'{lines}</g><g transform="translate({x},{y}) scale({scale})" fill="{color}">{nodes}</g>')
 
 
-def card(w, h, headline, sub, lock_h, head_size, pad, motif_spec, head_baseline=None, align="left"):
-    """An oxblood card: lockup, one Newsreader headline, one small line."""
+def card(w, h, headline, sub, lock_h, head_size, pad, motif_spec, head_baseline=None, align="left",
+         max_head_w=None, sub_size=None, sub_baseline=None):
+    """An oxblood card: lockup, the tagline in Newsreader, the descriptor below it.
+
+    The headline shrinks to fit `max_head_w` (default: the width inside the
+    padding) rather than running off the card."""
+    _, head_w = text_path("display", headline, head_size, 0, 0, -0.01)
+    limit = max_head_w or (w - 2 * pad)
+    if head_w > limit:
+        head_size *= limit / head_w
     mark = lock_h
     word_size = mark / 1.38
     ch = cap_height("word", word_size)
@@ -230,12 +238,16 @@ def card(w, h, headline, sub, lock_h, head_size, pad, motif_spec, head_baseline=
              f'<g transform="translate({lx},{ly}) scale({mark / 500})">{mark_outline(WHITE, 26, 20)}</g>',
              f'<path fill="{WHITE}" d="{wd}"/>', f'<path fill="{WHITE}" d="{hd}"/>']
     if sub:
-        sd, _ = text_path("text-semibold", sub, head_size * 0.36, hx, h - pad, 0.01, anchor=anchor)
+        sd, _ = text_path("text-semibold", sub, sub_size or head_size * 0.36, hx,
+                          sub_baseline if sub_baseline is not None else h - pad, 0.01, anchor=anchor)
         parts.append(f'<path fill="{OX_200}" d="{sd}"/>')
     return svg(w, h, "".join(parts), "HumemAI")
 
 
-TAGLINE = "Memory systems for agentic AI"
+# The tagline is Taewoon's (2026-09-27, first on LinkedIn); the descriptor says
+# plainly what HumemAI makes, and is also the GitHub organization description.
+TAGLINE = "Machines with human-like memory"
+DESCRIPTOR = "Open source memory systems for agentic AI"
 
 
 def qr(url, color=OXBLOOD, module=10, quiet=4):
@@ -309,14 +321,16 @@ def main():
         png(text, EXPORT / f"{name}.png", round(w * 600 / h), 600)
 
     cards = {
-        # name: (w, h, headline, sub, lockup height, headline size, padding, motif(x, y, scale, colour), baseline, align)
-        "og-1200x630": (1200, 630, TAGLINE, "humem.ai", 76, 76, 72, (700, 120, 1.05, OX_600, 7), None, "left"),
-        "github-social-1280x640": (1280, 640, TAGLINE, "github.com/humemai", 76, 78, 80, (760, 130, 1.05, OX_600, 7), None, "left"),
-        "x-header-1500x500": (1500, 500, TAGLINE, "humem.ai", 62, 64, 90, (130, 70, 0.95, OX_600, 6), 330, "right"),
-        "linkedin-banner-1128x191": (1128, 191, TAGLINE, None, 40, 38, 36, (40, -8, 0.46, OX_600, 4), 150, "right"),
+        # name: (w, h, lockup height, headline size, padding, motif(x, y, scale, colour, width), headline baseline,
+        #        align, headline max width, descriptor size, descriptor baseline)
+        "og-1200x630": (1200, 630, 76, 76, 72, (700, 120, 1.05, OX_600, 7), 488, "left", None, 30, 558),
+        "github-social-1280x640": (1280, 640, 76, 78, 80, (760, 130, 1.05, OX_600, 7), 490, "left", None, 31, 560),
+        # X lays the avatar over the bottom-left corner; everything else sits right.
+        "x-header-1500x500": (1500, 500, 62, 64, 90, (130, 70, 0.95, OX_600, 6), 330, "right", 880, 26, 400),
+        "linkedin-banner-1128x191": (1128, 191, 36, 36, 30, (40, -8, 0.46, OX_600, 4), 122, "right", 760, 16, 160),
     }
-    for name, (w, h, head, sub, lock_h, head_size, pad, mspec, base, align) in cards.items():
-        text = card(w, h, head, sub, lock_h, head_size, pad, mspec, base, align)
+    for name, (w, h, lock_h, head_size, pad, mspec, base, align, max_w, sub_size, sub_base) in cards.items():
+        text = card(w, h, TAGLINE, DESCRIPTOR, lock_h, head_size, pad, mspec, base, align, max_w, sub_size, sub_base)
         write(EXPORT / f"{name}.svg", text)
         png(text, EXPORT / f"{name}.png", w, h)
 

@@ -69,6 +69,13 @@ The old logo's outline is 16 units thick in a 500-unit box. At 16px, a browser t
 - **Spacing:** a 4px grid.
 - **Review sizes:** 360×800, 390×844, 768×1024, 1280×720 and 1920×1080 CSS pixels. 1920 is where desktop reviews happen.
 
+## Words: tagline and descriptor (2026-09-27)
+
+- **Tagline:** "Machines with human-like memory". Taewoon's line, first on the LinkedIn page. It's short, and it ties to the name (human + memory) and to the mark (a head holding a graph). On banners and cards it's the headline, in Newsreader.
+- **Descriptor:** "Open source memory systems for agentic AI". It says what HumemAI actually makes. It's the GitHub organization description, and the smaller second line under the tagline.
+
+Wherever there's room for both, use both: the tagline alone is memorable but vague.
+
 ## How much system (2026-09-27)
 
 HumemAI is one person's organization, so this is deliberately smaller than a company design system: tokens, one theme file for the docs, assets, and one checker. There are no shared components. The website keeps its own components and reads the tokens. Add a rule here when a real inconsistency shows up, not before.
