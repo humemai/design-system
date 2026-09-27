@@ -23,12 +23,15 @@ Every place the HumemAI brand appears, and where each one stands. Tick items off
 - [ ] Push and merge the four docs branches. The live docs only change when `deploy-docs` runs: on the next version tag, or run it by hand for the current version.
 - [ ] Push `humemai-docs`, `.github` and `humemai-research`.
 
+## Done on the platforms
+
+- [x] GitHub organization description: "Open source memory systems for agentic AI" (was "A Machine With Human-Like Memory Systems"), 2026-09-27, through the API.
+
 ## To upload by hand (platform settings, no API)
 
 | Where | File (`export/`) |
 |---|---|
 | GitHub organization avatar (Settings → Profile) | `avatar-500.png` |
-| GitHub organization description: suggested "Open source memory systems for agentic AI" (now "A Machine With Human-Like Memory Systems") | (text) |
 | Social preview of each public repository (Settings → General) | `github-social-1280x640.png` |
 | Hugging Face organization `humemai` avatar | `avatar-500.png` |
 | LinkedIn page logo and cover, if HumemAI has a page | `avatar-500.png`, `linkedin-banner-1128x191.png` |
@@ -39,4 +42,4 @@ Every place the HumemAI brand appears, and where each one stands. Tick items off
 - **Published docs versions** on docs.humem.ai (26 of them) keep the theme they were built with. New builds get the new one.
 - **pdoc API pages** at humemai.github.io (explicit-memory, human-like-memory-systems, humemai-research): default pdoc styling with no HumemAI brand in them.
 - **Paper figures** (the site's `public/images/papers/`, the ArcadeDB benchmark SVGs): research results, not brand.
-- **`~/Drive/humemai`**: the 2024 teal logo files. This repo is now the source.
+- **`~/Drive/humemai`** (the 2024 teal logos and a QR code for https://humem.ai) was deleted on 2026-09-27: this repo is the source, and `export/qr-humem-ai.svg` replaces the QR code.

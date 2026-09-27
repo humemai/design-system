@@ -48,6 +48,8 @@ ASSETS = {
     "export/github-social-1280x640.png": (1280, 640),
     "export/linkedin-banner-1128x191.png": (1128, 191),
     "export/x-header-1500x500.png": (1500, 500),
+    "export/qr-humem-ai.svg": None,
+    "export/qr-humem-ai.png": (1024, 1024),
 }
 
 

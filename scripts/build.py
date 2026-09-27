@@ -238,6 +238,23 @@ def card(w, h, headline, sub, lock_h, head_size, pad, motif_spec, head_baseline=
 TAGLINE = "Memory systems for agentic AI"
 
 
+def qr(url, color=OXBLOOD, module=10, quiet=4):
+    """A QR code for `url`, dark modules in oxblood on white (9.11:1, well
+    inside what scanners need), with the standard four-module quiet zone.
+    Replaces the 2024 qr-code.svg, which also pointed at https://humem.ai."""
+    import qrcode
+
+    q = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_M, border=0)
+    q.add_data(url)
+    q.make(fit=True)
+    matrix = q.get_matrix()
+    n = len(matrix)
+    size = (n + 2 * quiet) * module
+    cells = "".join(f"M{(x + quiet) * module} {(y + quiet) * module}h{module}v{module}h-{module}z"
+                    for y, row in enumerate(matrix) for x, dark in enumerate(row) if dark)
+    return svg(size, size, f'<rect width="{size}" height="{size}" fill="{WHITE}"/><path fill="{color}" d="{cells}"/>', url)
+
+
 def write(path, text):
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(text)
@@ -302,6 +319,10 @@ def main():
         text = card(w, h, head, sub, lock_h, head_size, pad, mspec, base, align)
         write(EXPORT / f"{name}.svg", text)
         png(text, EXPORT / f"{name}.png", w, h)
+
+    qr_svg = qr("https://humem.ai")
+    write(EXPORT / "qr-humem-ai.svg", qr_svg)
+    png(qr_svg, EXPORT / "qr-humem-ai.png", 1024, 1024)
 
     print(f"wrote {len(masters)} masters to logo/ and exports to export/")
 

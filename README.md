@@ -75,6 +75,7 @@ The copy carries `verify.sh`, which fails if a vendored file was edited in place
 | `export/linkedin-banner-1128x191.png` | LinkedIn page cover |
 | `export/x-header-1500x500.png` | X header |
 | `export/lockup.png`, `lockup-dark.png` | README headers, with a `<picture>` element so dark mode gets the rose version |
+| `export/qr-humem-ai.svg`, `qr-humem-ai.png` | slides, posters and cards: a QR code for https://humem.ai in oxblood |
 
 ## Checking pages
 
