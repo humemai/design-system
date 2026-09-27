@@ -25,8 +25,23 @@ The docs source changes show on docs.humem.ai when `deploy-docs` next runs (a ve
 - [x] LinkedIn page `humemai`: logo, cover, and the About text (was "A Machine With Human-Like Memory Systems"; now the site's description of HumemAI and its projects). The tagline "Machines with human-like memory" is Taewoon's and stays.
 - [x] X `@humem_ai`: avatar, header, and bio "Machines with human-like memory. Open source memory systems for agentic AI."
 - [x] Hugging Face organization `humemai`: avatar.
+- [x] YouTube `@HumemAI`: picture, banner (`youtube-banner-2560x1440.png`) and description (was "HumemAI: A Machine With Human-Like Memory Systems").
+- [x] GitHub repo details: `humemai` description is the tagline (was "AI with Human-Like Memory"); `humem.ai` homepage is https://humem.ai (was the Vercel preview URL); `humemdb`, `cypherglot` and `humemai-docs` have real descriptions and their docs as homepage.
+- [ ] Zenodo community `humemai`, Medium `@humemai`, dev.to `humemai`, Substack author `@humemai`: all still show the teal head. Each needs Taewoon signed in before the avatar can change.
+
+## Sweep (2026-09-27)
+
+Deterministic checks after the rollout, and a web search for every other place HumemAI appears:
+
+- **humem.ai**, crawled from the home page: 26 pages, 325 assets, none broken. Four fallback gradients still hard-coded the 2024 orange and green, code blocks used the old coral, and the 404 page was Next's unbranded default; all fixed in humem.ai #5, which also added a sitemap and robots.txt (both were 404).
+- **Old URLs**: all 19 humem.ai URLs the Wayback Machine holds that answered 404 (old blog posts, tags, "who we are", team, terms, and `/2024-03-01-design-humemai/`, which Google still lists) now redirect to the page that replaced them (humem.ai #6). Checked in production: 19 of 19 resolve.
+- **docs.humem.ai**, crawled: 140 pages, 292 assets, no old brand left. One placeholder link, `docs.humem.ai/arcadedb/X.Y.Z/`, is autolinked in arcadedb's `development/documentation.md`.
+- **GitHub code search** over every humemai repo: no old logo files, teal hex or teal badges left. All 45 README images across the public repos load.
+- **PyPI** pages only change with a release: `cypherglot` 0.1.0 still shows the teal docs badge; `humemai-research` 2.5.7's summary is "A Machine With Human-Like Memory"; `humemai` 0.0.1's is "HumemAI — SDK for Human-Like Memory Systems"; `humemdb` 0.0.0 has a placeholder README. The PyPI organization https://pypi.org/org/HumemAI/ (linked from the site footer) lists no projects: all seven sit under personal accounts.
 
 ## Left as they are, on purpose
+
+- **Frozen third-party copies**: the BNAIC 2024 paper PDF (Fig. 1 is the old teal logo), the October 2024 LinkedIn launch post, and Zenodo release records.
 
 - **pdoc API pages** at humemai.github.io (explicit-memory, human-like-memory-systems, humemai-research): default pdoc styling with no HumemAI brand in them.
 - **Paper figures** (the site's `public/images/papers/`, the ArcadeDB benchmark SVGs): they must match the published papers.
