@@ -250,6 +250,28 @@ TAGLINE = "Machines with human-like memory"
 DESCRIPTOR = "Open source memory systems for agentic AI"
 
 
+def youtube_banner(w=2560, h=1440):
+    """YouTube's channel art: 2560x1440, but only the centre 1546x423 shows on
+    every device (TVs show it all, phones only the middle band), so the
+    lockup, tagline and descriptor sit centred inside that band and the motif
+    lives outside it, where losing it costs nothing."""
+    cx, cy = w / 2, h / 2
+    mark = 84
+    word_size = mark / 1.38
+    ch = cap_height("word", word_size)
+    _, ww = text_path("word", WORD, word_size, 0, 0, WORD_TRACK)
+    lock_w = mark + mark * 0.16 + ww
+    lx, ly = cx - lock_w / 2, cy - 196
+    wd, _ = text_path("word", WORD, word_size, lx + mark + mark * 0.16, ly + mark / 2 + ch / 2 + mark * 0.03, WORD_TRACK)
+    hd, _ = text_path("display", TAGLINE, 84, cx, cy + 58, -0.01, anchor="middle")
+    sd, _ = text_path("text-semibold", DESCRIPTOR, 34, cx, cy + 134, 0.01, anchor="middle")
+    parts = [f'<rect width="{w}" height="{h}" fill="{OXBLOOD}"/>',
+             motif(120, 140, 1.5, OX_600, 9), motif(2090, 960, 1.1, OX_600, 8),
+             f'<g transform="translate({lx:.1f},{ly:.1f}) scale({mark / 500})">{mark_outline(WHITE, 26, 20)}</g>',
+             f'<path fill="{WHITE}" d="{wd}"/>', f'<path fill="{WHITE}" d="{hd}"/>', f'<path fill="{OX_200}" d="{sd}"/>']
+    return svg(w, h, "".join(parts), "HumemAI")
+
+
 def qr(url, color=OXBLOOD, module=10, quiet=4):
     """A QR code for `url`, dark modules in oxblood on white (9.11:1, well
     inside what scanners need), with the standard four-module quiet zone.
@@ -333,6 +355,10 @@ def main():
         text = card(w, h, TAGLINE, DESCRIPTOR, lock_h, head_size, pad, mspec, base, align, max_w, sub_size, sub_base)
         write(EXPORT / f"{name}.svg", text)
         png(text, EXPORT / f"{name}.png", w, h)
+
+    yt = youtube_banner()
+    write(EXPORT / "youtube-banner-2560x1440.svg", yt)
+    png(yt, EXPORT / "youtube-banner-2560x1440.png", 2560, 1440)
 
     qr_svg = qr("https://humem.ai")
     write(EXPORT / "qr-humem-ai.svg", qr_svg)
