@@ -30,7 +30,12 @@ The docs source changes show on docs.humem.ai when `deploy-docs` next runs (a ve
 - [x] Zenodo community `humemai`: logo (checked through the API).
 - [x] dev.to `humemai`: avatar, bio (tagline and descriptor), website https://humem.ai, brand colour `#892122`.
 - [x] Medium `@humemai`: avatar (1024px) and bio.
-- [x] Substack `@humemai`: avatar and bio. The accent colour is still Substack's orange `#FF6719`: its picker did not keep the value when set by script; set it by hand (Accent colour, rainbow swatch, `#892122`, Save).
+- [x] Substack `@humemai`: avatar, bio, header (`substack-header-2688x512.png`) and accent colour `#892122`. Background left white: it is the reading surface.
+- [ ] PyPI user `humemai`: PyPI shows the Gravatar of its primary email, taewoon@humem.ai, which is the 2024 teal logo. Changing it needs a Gravatar sign-in (and changes that email's picture on every Gravatar site).
+- [x] PyPI links (humem.ai footer and About page, the GitHub profile) now go to https://pypi.org/user/humemai/, the account that owns all seven packages; the PyPI organization https://pypi.org/org/HumemAI/ (also owned by that account) holds no projects.
+- [x] humem.ai search description is the descriptor, "Open source memory systems for agentic AI." (humem.ai #7).
+- [x] `humemai` README no longer announces a hosted HumemAI Cloud (humemai #2).
+- [x] The `X.Y.Z` placeholder link in arcadedb's developer docs is code now: source in arcadedb-embedded-python #7, the 12 published copies in humemai-docs.
 
 ## Sweep (2026-09-27)
 
@@ -40,7 +45,7 @@ Deterministic checks after the rollout, and a web search for every other place H
 - **Old URLs**: all 19 humem.ai URLs the Wayback Machine holds that answered 404 (old blog posts, tags, "who we are", team, terms, and `/2024-03-01-design-humemai/`, which Google still lists) now redirect to the page that replaced them (humem.ai #6). Checked in production: 19 of 19 resolve.
 - **docs.humem.ai**, crawled: 140 pages, 292 assets, no old brand left. One placeholder link, `docs.humem.ai/arcadedb/X.Y.Z/`, is autolinked in arcadedb's `development/documentation.md`.
 - **GitHub code search** over every humemai repo: no old logo files, teal hex or teal badges left. All 45 README images across the public repos load.
-- **PyPI** pages only change with a release: `cypherglot` 0.1.0 still shows the teal docs badge; `humemai-research` 2.5.7's summary is "A Machine With Human-Like Memory"; `humemai` 0.0.1's is "HumemAI — SDK for Human-Like Memory Systems"; `humemdb` 0.0.0 has a placeholder README. The PyPI organization https://pypi.org/org/HumemAI/ (linked from the site footer) lists no projects: all seven sit under personal accounts.
+- **PyPI** pages only change with a release: `cypherglot` 0.1.0 still shows the teal docs badge; `humemai-research` 2.5.7's summary is "A Machine With Human-Like Memory"; `humemai` 0.0.1's is "HumemAI — SDK for Human-Like Memory Systems"; `humemdb` 0.0.0 has a placeholder README.
 
 ## Left as they are, on purpose
 
