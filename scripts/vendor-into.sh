@@ -10,9 +10,14 @@
 # export/ (not the banners, which are uploaded to the platforms). Run it from a clean
 # checkout: the commit it records must be the one the files came from.
 set -euo pipefail
-cd "$(dirname "$0")/.."
 
 dest=${1:?usage: vendor-into.sh <dest>}
+# Resolve the destination against the caller's directory BEFORE changing into
+# this repo: resolved afterwards, a relative path lands inside the design
+# system itself (it did, the first time this was run from outside it).
+mkdir -p "$dest"
+dest=$(cd "$dest" && pwd)
+cd "$(dirname "$0")/.."
 if [ -n "$(git status --porcelain -- css logo assets export)" ]; then
   echo "✗ css/, logo/, assets/ or export/ has uncommitted changes; commit first" >&2
   exit 1
