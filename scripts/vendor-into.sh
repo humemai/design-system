@@ -6,8 +6,8 @@
 #   humem.ai            scripts/vendor-into.sh ../humem.ai/public/brand
 #   an MkDocs project   scripts/vendor-into.sh ../<repo>/docs/brand
 #
-# Copies css/, logo/, assets/ and the icon files from export/ (not the social
-# cards, which are uploaded to the platforms, not served). Run it from a clean
+# Copies css/, logo/, assets/, the icon files and the site social card from
+# export/ (not the banners, which are uploaded to the platforms). Run it from a clean
 # checkout: the commit it records must be the one the files came from.
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -22,7 +22,8 @@ rm -rf "$dest"
 mkdir -p "$dest/export"
 cp -R css logo assets "$dest/"
 cp export/favicon.svg export/favicon.ico export/apple-touch-icon.png \
-   export/icon-192.png export/icon-512.png export/lockup*.png "$dest/export/"
+   export/icon-192.png export/icon-512.png export/lockup*.png \
+   export/og-1200x630.png "$dest/export/"
 cp scripts/verify.sh "$dest/verify.sh"
 
 hash=$(cd "$dest" && find css logo assets export -type f | LC_ALL=C sort | xargs sha256sum | sha256sum | awk '{print $1}')
