@@ -351,6 +351,8 @@ def main():
         # X lays the avatar over the bottom-left corner; everything else sits right.
         "x-header-1500x500": (1500, 500, 62, 64, 90, (130, 70, 0.95, OX_600, 6), 330, "right", 880, 26, 400),
         "linkedin-banner-1128x191": (1128, 191, 36, 36, 30, (40, -8, 0.46, OX_600, 4), 122, "right", 760, 16, 160),
+        # Substack takes 1344x256 up to 21:4; this is 21:4 at 2x.
+        "substack-header-2688x512": (2688, 512, 64, 72, 80, (90, 30, 1.0, OX_600, 7), 330, "right", 1500, 30, 420),
     }
     for name, (w, h, lock_h, head_size, pad, mspec, base, align, max_w, sub_size, sub_base) in cards.items():
         text = card(w, h, TAGLINE, DESCRIPTOR, lock_h, head_size, pad, mspec, base, align, max_w, sub_size, sub_base)

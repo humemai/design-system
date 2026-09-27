@@ -74,6 +74,9 @@ The copy carries `verify.sh`, which fails if a vendored file was edited in place
 | `export/github-social-1280x640.png` | each repository's social preview (Settings → General) |
 | `export/linkedin-banner-1128x191.png` | LinkedIn page cover |
 | `export/x-header-1500x500.png` | X header |
+| `export/youtube-banner-2560x1440.png` | YouTube channel banner (content inside the 1546×423 area every device shows) |
+| `export/substack-header-2688x512.png` | Substack profile header |
+| `export/avatar-1024.png` | platforms that want 1000px or more (Medium, Substack) |
 | `export/lockup.png`, `lockup-dark.png` | README headers, with a `<picture>` element so dark mode gets the rose version |
 | `export/qr-humem-ai.svg`, `qr-humem-ai.png` | slides, posters and cards: a QR code for https://humem.ai in oxblood |
 

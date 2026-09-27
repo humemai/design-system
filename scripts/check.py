@@ -50,6 +50,7 @@ ASSETS = {
     "export/linkedin-banner-1128x191.png": (1128, 191),
     "export/x-header-1500x500.png": (1500, 500),
     "export/youtube-banner-2560x1440.png": (2560, 1440),
+    "export/substack-header-2688x512.png": (2688, 512),
     "export/qr-humem-ai.svg": None,
     "export/qr-humem-ai.png": (1024, 1024),
 }
