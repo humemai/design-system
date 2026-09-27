@@ -31,6 +31,7 @@ The docs source changes show on docs.humem.ai when `deploy-docs` next runs (a ve
 - [x] dev.to `humemai`: avatar, bio (tagline and descriptor), website https://humem.ai, brand colour `#892122`.
 - [x] Medium `@humemai`: avatar (1024px) and bio.
 - [x] Substack `@humemai`: avatar, bio, header (`substack-header-2688x512.png`) and accent colour `#892122`. Background left white: it is the reading surface.
+- [x] Google Workspace account taewoon@humem.ai: profile photo is the tile (set by the admin in the Admin console; the account can't change its own photo). The Workspace organisation logo is unset, so nothing teal shows in Gmail or Drive.
 - [x] PyPI user `humemai`: PyPI shows the Gravatar of its primary email, taewoon@humem.ai. That Gravatar account (separate from the personal tae898@gmail.com one) now has the tile, checked through Gravatar's avatar URL. Every site that uses Gravatar for taewoon@humem.ai shows it too.
 - [x] PyPI links (humem.ai footer and About page, the GitHub profile) now go to https://pypi.org/user/humemai/, the account that owns all seven packages; the PyPI organization https://pypi.org/org/HumemAI/ (also owned by that account) holds no projects.
 - [x] humem.ai search description is the descriptor, "Open source memory systems for agentic AI." (humem.ai #7).
