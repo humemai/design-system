@@ -323,6 +323,7 @@ def main():
         png(tile_svg, EXPORT / f"icon-{size}.png", size, size)
     png(avatar_svg, EXPORT / "apple-touch-icon.png", 180, 180)
     png(avatar_svg, EXPORT / "avatar-500.png", 500, 500)
+    png(avatar_svg, EXPORT / "avatar-1024.png", 1024, 1024)  # Medium and Substack ask for 1000+
     # favicon.ico: render each size from the vector rather than downscaling one
     # bitmap, so 16px gets its own anti-aliasing.
     frames = []

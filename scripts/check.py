@@ -44,6 +44,7 @@ ASSETS = {
     "export/icon-512.png": (512, 512),
     "export/apple-touch-icon.png": (180, 180),
     "export/avatar-500.png": (500, 500),
+    "export/avatar-1024.png": (1024, 1024),
     "export/og-1200x630.png": (1200, 630),
     "export/github-social-1280x640.png": (1280, 640),
     "export/linkedin-banner-1128x191.png": (1128, 191),
