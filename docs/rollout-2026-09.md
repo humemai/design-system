@@ -27,7 +27,10 @@ The docs source changes show on docs.humem.ai when `deploy-docs` next runs (a ve
 - [x] Hugging Face organization `humemai`: avatar.
 - [x] YouTube `@HumemAI`: picture, banner (`youtube-banner-2560x1440.png`) and description (was "HumemAI: A Machine With Human-Like Memory Systems").
 - [x] GitHub repo details: `humemai` description is the tagline (was "AI with Human-Like Memory"); `humem.ai` homepage is https://humem.ai (was the Vercel preview URL); `humemdb`, `cypherglot` and `humemai-docs` have real descriptions and their docs as homepage.
-- [ ] Zenodo community `humemai`, Medium `@humemai`, dev.to `humemai`, Substack author `@humemai`: all still show the teal head. Each needs Taewoon signed in before the avatar can change.
+- [x] Zenodo community `humemai`: logo (checked through the API).
+- [x] dev.to `humemai`: avatar, bio (tagline and descriptor), website https://humem.ai, brand colour `#892122`.
+- [x] Medium `@humemai`: avatar (1024px) and bio.
+- [x] Substack `@humemai`: avatar and bio. The accent colour is still Substack's orange `#FF6719`: its picker did not keep the value when set by script; set it by hand (Accent colour, rainbow swatch, `#892122`, Save).
 
 ## Sweep (2026-09-27)
 
