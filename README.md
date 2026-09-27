@@ -2,7 +2,7 @@
 
 The HumemAI brand in one place: the colour, the typefaces, the logo and icon, and the rules that keep them readable. Everything HumemAI publishes takes its brand from here: the website [humem.ai](https://humem.ai), the documentation at [docs.humem.ai](https://docs.humem.ai), the GitHub organization and the social accounts.
 
-The reasons behind each choice are in [docs/decisions.md](docs/decisions.md). Where the brand has been rolled out, and what is still to publish or upload, is in [docs/rollout-2026-09.md](docs/rollout-2026-09.md).
+The reasons behind each choice are in [docs/decisions.md](docs/decisions.md). Where the brand has been rolled out, platform by platform, is in [docs/rollout-2026-09.md](docs/rollout-2026-09.md).
 
 ## The short version
 
