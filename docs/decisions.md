@@ -67,7 +67,18 @@ The old logo's outline is 16 units thick in a 500-unit box. At 16px, a browser t
 - **Type size:** 16px body on phones, 17px from 1000px up. Scale ratio 1.25. Nothing below 12px, and 12px is for uppercase labels only.
 - **Line length:** prose lines of 60 to 75 characters (`--hm-measure: 68ch`), body line height 1.65.
 - **Spacing:** a 4px grid.
-- **Review sizes:** 360×800, 390×844, 768×1024, 1280×720 and 1920×1080 CSS pixels. 1920 is where desktop reviews happen.
+- **Review sizes:** 360×800, 390×844, 768×1024, 984×1092, 1280×720, and 1920×1080 CSS pixels. 1920 is where desktop reviews happen. 984×1092 (an unfolded foldable) was added on 2026-10-02: it is the only size between 920 and 1024, where the website switches layouts.
+
+## Wide content (2026-10-02)
+
+The prose column is set by the line length above, so it stays narrow on every screen. Content that is not prose does not have to:
+
+- **Data tables** are as wide as their columns need, never narrower than the prose column and never wider than the screen less the page gutters, centred on the column. Holding them to the prose column made most of a benchmark page's tables scroll sideways while half a 1920 screen stayed empty. A limit at the page frame (the website's 1180px) still left a third of them scrolling at every desktop size, so the limit is the screen.
+- **Table headers** wrap when the table is out of room, never inside a hyphenated word, and a direction arrow stays with the word before it.
+- **Figures** stay in the prose column. An image scales instead of scrolling, so a wider box only makes it bigger; a figure gets more width only if it is drawn wide.
+- Captions and notes stay in the prose column with the paragraphs.
+
+The website implements this in humemai/humem.ai#10 and records the numbers in its `docs/design/layout-widths.md`.
 
 ## Words: tagline and descriptor (2026-09-27)
 

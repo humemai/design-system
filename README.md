@@ -82,7 +82,7 @@ The copy carries `verify.sh`, which fails if a vendored file was edited in place
 
 ## Checking pages
 
-Review pages at these sizes (CSS pixels): 360×800 and 390×844 (phones), 768×1024 (tablet), 1280×720 (laptop) and 1920×1080 (desktop, the main review size).
+Review pages at these sizes (CSS pixels): 360×800 and 390×844 (phones), 768×1024 (tablet), 984×1092 (unfolded foldable), 1280×720 (laptop), and 1920×1080 (desktop, the main review size). Prose stays at the measure on every screen; data tables may be wider (see `docs/decisions.md`, Wide content).
 
 ## Licence
 
