@@ -28,6 +28,7 @@ fonts/              the two brand fonts (SIL Open Font License), used to outline
 scripts/build.py    generates logo/ and export/
 scripts/check.py    checks the tokens, every contrast pairing, and the export sizes
 scripts/vendor-into.sh  copies the system into a site, with a pinned VERSION.md
+scripts/vendor-all.sh   vendors into every HumemAI repo at once, or reports which copies are behind
 scripts/recolor.py  converts an illustration drawn in the 2024 teal and coral palette to oxblood and rose
 ```
 
@@ -55,7 +56,14 @@ Dark mode follows the operating system. `data-theme="light"` or `"dark"` on `<ht
 
 ## Using it
 
-Vendor a copy from a clean checkout:
+Five repositories carry a vendored copy: humem.ai, humemdb, audit-ready-memory, humemai-docs, and arcadedb-embedded-python. After a change here is merged, update all of them from sibling checkouts in one run, then commit in each:
+
+```bash
+scripts/vendor-all.sh --check   # which copies are behind, and which files differ
+scripts/vendor-all.sh           # re-vendor every copy that is behind
+```
+
+`vendor-all.sh` skips a repository whose brand directory has uncommitted changes, and refuses a design-system commit that is not on `origin/main`. To add a consumer, add it to `CONSUMERS` in the script. A single copy can still be made by hand:
 
 ```bash
 scripts/vendor-into.sh ../humem.ai/public/brand        # the website

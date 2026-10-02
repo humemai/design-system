@@ -6,8 +6,9 @@
 #   humem.ai            scripts/vendor-into.sh ../humem.ai/public/brand
 #   an MkDocs project   scripts/vendor-into.sh ../<repo>/docs/brand
 #
-# Copies css/, logo/, assets/, the icon files and the site social card from
-# export/ (not the banners, which are uploaded to the platforms). Run it from a clean
+# Copies css/, logo/, assets/ (less the email signature), the icon files and
+# the site social card from export/ (not the banners, which are uploaded to the
+# platforms). scripts/vendor-all.sh runs this for every consumer at once. Run it from a clean
 # checkout: the commit it records must be the one the files came from.
 set -euo pipefail
 
@@ -26,6 +27,9 @@ fi
 rm -rf "$dest"
 mkdir -p "$dest/export"
 cp -R css logo assets "$dest/"
+# The email signature is pasted into Gmail and no site uses it; vendored, every
+# signature tweak would mark all the copies stale (#3).
+rm "$dest/assets/email-signature.html"
 cp export/favicon.svg export/favicon.ico export/apple-touch-icon.png \
    export/icon-192.png export/icon-512.png export/lockup*.png \
    export/og-1200x630.png "$dest/export/"
