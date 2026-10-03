@@ -65,13 +65,23 @@ The old logo's outline is 16 units thick in a 500-unit box. At 16px, a browser t
 
 - **Contrast:** WCAG AA. 4.5:1 for all text, including large text; 3:1 for icons, control borders and focus rings. `scripts/check.py` checks 25 semantic pairings in each theme.
 - **Type size:** 16px body on phones, 17px from 1000px up. Scale ratio 1.25. Nothing below 12px, and 12px is for uppercase labels only.
-- **Line length:** prose lines of 60 to 75 characters (`--hm-measure: 68ch`), body line height 1.65.
+- **Line length:** prose lines of about 70 to 85 characters, a median above 80 on desktop (changed 2026-10-03, see "Line length" below), body line height 1.65.
 - **Spacing:** a 4px grid.
 - **Review sizes:** 360×800, 390×844, 768×1024, 984×1092, 1280×720, and 1920×1080 CSS pixels. 1920 is where desktop reviews happen. 984×1092 (an unfolded foldable) was added on 2026-10-02: it is the only size between 920 and 1024, where the website switches layouts.
 
+## Line length (2026-10-03)
+
+The first rule was 60 to 75 characters (`--hm-measure: 68ch`). It is now about 70 to 85, with a median above 80 on desktop, and the 16px and 17px body sizes stay as they are.
+
+- **Why it moved.** `ch` is the width of a "0", and in Schibsted Grotesk that is wider than the average letter, so 68ch holds about 80 characters, not 68. The old range was never what the token produced. The website's 736px column, measured on its longest page, gave a median of 83 to 87 and read well.
+- **What others do.** Long-form pages of research-lab sites, measured on 2026-10-03 at a 1916px viewport, one article each: Anthropic 71, DeepMind 70, OpenAI 81, Meta 83, World Labs 85, Google Research 107. Columns are 600 to 720px at 16 to 17.5px. The sites worth copying sit at 70 to 85.
+- **The benchmark is World Labs:** a 720px column at 17px, median 85. WCAG 1.4.8 (AAA) puts the ceiling at 80 characters; being a little over it, on a page that is mostly tables and figures, was a choice (humemai/humem.ai#9).
+- **The token.** `--hm-measure` stays 68ch for pages that want a cap, and it lands at about 80. Count characters per line on the rendered page; do not trust the `ch` number. Narrowing the website to 62ch (median 71) was tried and not kept.
+- **Limits.** Under 60 gets choppy and over 90 loses the next line. Phones are narrower than any of this and are not touched.
+
 ## Wide content (2026-10-02)
 
-The prose column is set by the line length above, so it stays narrow on every screen. Content that is not prose does not have to:
+The prose column is set by the line length, so it stays narrow on every screen. Content that is not prose does not have to:
 
 - **Data tables** are as wide as their columns need, never narrower than the prose column and never wider than the screen less the page gutters, centred on the column. Holding them to the prose column made most of a benchmark page's tables scroll sideways while half a 1920 screen stayed empty. A limit at the page frame (the website's 1180px) still left a third of them scrolling at every desktop size, so the limit is the screen.
 - **Table headers** wrap when the table is out of room, never inside a hyphenated word, and a direction arrow stays with the word before it.
