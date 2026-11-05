@@ -21,6 +21,7 @@ The reasons behind each choice are in [docs/decisions.md](docs/decisions.md). Wh
 ```
 css/tokens.css      colour ramps, neutrals, type, spacing, and the semantic layer for light and dark
 css/mkdocs.css      the theme for MkDocs Material documentation sites
+css/components.css  shared components: the card grid (equal-height rows) and its card
 assets/fonts.html   the Google Fonts block for plain HTML pages
 logo/               SVG masters: mark, tile, avatar, wordmark, lockups (light, dark, white)
 export/             PNG, ICO and social images, generated from logo/ and the fonts
