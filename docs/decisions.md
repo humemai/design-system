@@ -90,6 +90,10 @@ The prose column is set by the line length, so it stays narrow on every screen. 
 
 The website implements this in humemai/humem.ai#10 and records the numbers in its `docs/design/layout-widths.md`.
 
+## Card grid (2026-11-06)
+
+`css/components.css` holds the card grid that docs.humem.ai wrote inline: `.hm-card-grid` and `.hm-card`. Its rows are equal height (`grid-auto-rows: 1fr`). The hub's first version let each row size to its own cards, so the last row, one short card, was 85 px shorter than the rows above (217 px against 302 px at 1920 wide). Widths were always equal, which is why only the heights looked wrong. A pattern two pages need goes here first and is vendored, like the colours.
+
 ## Words: tagline and descriptor (2026-09-27)
 
 - **Tagline:** "Machines with human-like memory". Taewoon's line, first on the LinkedIn page. It's short, and it ties to the name (human + memory) and to the mark (a head holding a graph). On banners and cards it's the headline, in Newsreader.
