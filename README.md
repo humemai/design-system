@@ -57,7 +57,7 @@ Dark mode follows the operating system. `data-theme="light"` or `"dark"` on `<ht
 
 ## Using it
 
-Five repositories carry a vendored copy: humem.ai, humemdb, audit-ready-memory, humemai-docs, and arcadedb-embedded-python. After a change here is merged, update all of them from sibling checkouts in one run, then commit in each:
+Four repositories carry a vendored copy: humem.ai, audit-ready-memory, humemai-docs, and arcadedb-embedded-python. After a change here is merged, update all of them from sibling checkouts in one run, then commit in each:
 
 ```bash
 scripts/vendor-all.sh --check   # which copies are behind, and which files differ
@@ -68,7 +68,7 @@ scripts/vendor-all.sh           # re-vendor every copy that is behind
 
 ```bash
 scripts/vendor-into.sh ../humem.ai/public/brand        # the website
-scripts/vendor-into.sh ../humemdb/docs/brand           # an MkDocs project
+scripts/vendor-into.sh ../audit-ready-memory/docs/brand  # an MkDocs project
 ```
 
 The copy carries `verify.sh`, which fails if a vendored file was edited in place. `css/mkdocs.css` lists the `mkdocs.yml` settings that go with it.
