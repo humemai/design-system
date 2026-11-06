@@ -94,6 +94,10 @@ The website implements this in humemai/humem.ai#10 and records the numbers in it
 
 `css/components.css` holds the card grid that docs.humem.ai wrote inline: `.hm-card-grid` and `.hm-card`. Its rows are equal height (`grid-auto-rows: 1fr`). The hub's first version let each row size to its own cards, so the last row, one short card, was 85 px shorter than the rows above (217 px against 302 px at 1920 wide). Widths were always equal, which is why only the heights looked wrong. A pattern two pages need goes here first and is vendored, like the colours.
 
+## Behaviour section (2026-11-06)
+
+The README's Behaviour section copies the structure of Stateloop's design-system README (short imperative rules about how a page acts, each with how it is checked), not its look or its wording. The rules are written in HumemAI's own tokens and names. Two points are new here and not yet in any script: the 44px touch-target rule at 999px and narrower, and the filled `--hm-danger` confirm button. The section says plainly that only the focus and danger contrast pairings are checked by `scripts/check.py` today, and that the rest are conventions measured on the rendered page. Add a script check when a rule is broken in practice, as with the card grid.
+
 ## Words: tagline and descriptor (2026-09-27)
 
 - **Tagline:** "Machines with human-like memory". Taewoon's line, first on the LinkedIn page. It's short, and it ties to the name (human + memory) and to the mark (a head holding a graph). On banners and cards it's the headline, in Newsreader.
