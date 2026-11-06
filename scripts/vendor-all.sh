@@ -13,7 +13,6 @@ set -euo pipefail
 # <repo>:<brand directory inside it>
 CONSUMERS=(
   "humem.ai:public/brand"
-  "humemdb:docs/brand"
   "audit-ready-memory:docs/brand"
   "humemai-docs:brand"
   "arcadedb-embedded-python:bindings/python/docs/brand"
