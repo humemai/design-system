@@ -57,6 +57,18 @@ Read the semantic names; the ramps exist for the semantic layer to point at.
 
 Dark mode follows the operating system. `data-theme="light"` or `"dark"` on `<html>` pins it.
 
+## Behaviour
+
+How a page acts, as opposed to how it looks. These rules apply to every HumemAI page and app. Today `scripts/check.py` checks only the contrast of the focus ring and of danger text (the `--hm-focus` and `--hm-danger` pairings) and `scripts/check_css.py` only that the CSS parses; everything else here is a convention, checked by measuring the rendered page.
+
+- **Touch targets.** Make every control at least 44×44px at 999px and narrower, by padding, not by a bigger font. This is a convention, not yet in a script.
+- **Shorthand after longhand.** A shorthand (`font:`, `padding:`, `margin:`) after a longhand in the same block silently resets it. Search the block and every rule of higher specificity for the shorthand, and confirm by measuring the rendered element.
+- **Keep the reader's place.** After any action, notice, list reload or navigation, the page scroll, the position of any inner scroller and the focused element stay where they were. Measure `scrollY`, the inner scroll and `document.activeElement` before and after, at 1920 and 390 wide.
+- **Notices float.** A notice never moves the page. Move focus to it with `focus({preventScroll: true})`, and update lists in place.
+- **Multi-line fields.** Ctrl+Enter (Cmd+Enter on macOS) submits and Enter adds a newline. Show the hint only while the field has focus.
+- **Destructive actions.** Put them in an overflow menu, in `--hm-danger` ink with words, never colour alone. Confirm with a filled button in `--hm-danger`. Place each action next to the thing it acts on.
+- **Repeated items.** Cards in a row share one height, with the footer line at the bottom: use `.hm-card-grid` and `.hm-card`, clamp long text, and set no fixed heights. In a list, each control sits at the same x in every row and never wraps. Text that overflows ends in an ellipsis, not a fade.
+
 ## Using it
 
 Four repositories carry a vendored copy: humem.ai, audit-ready-memory, humemai-docs, and arcadedb-embedded-python. After a change here is merged, update all of them from sibling checkouts in one run, then commit in each:
