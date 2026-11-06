@@ -28,9 +28,11 @@ export/             PNG, ICO and social images, generated from logo/ and the fon
 fonts/              the two brand fonts (SIL Open Font License), used to outline text
 scripts/build.py    generates logo/ and export/
 scripts/check.py    checks the tokens, every contrast pairing, and the export sizes
+scripts/check_css.py  checks that every css/*.css file parses and its brackets balance
 scripts/vendor-into.sh  copies the system into a site, with a pinned VERSION.md
 scripts/vendor-all.sh   vendors into every HumemAI repo at once, or reports which copies are behind
 scripts/recolor.py  converts an illustration drawn in the 2024 teal and coral palette to oxblood and rose
+.github/workflows/check.yml  CI on every pull request and push to main: check.py, check_css.py, and that logo/ and export/*.svg match build.py
 ```
 
 Nothing in `logo/` or `export/` is edited by hand. Change `scripts/build.py`, then:
