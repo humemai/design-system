@@ -36,6 +36,14 @@ jobs:
       - name: Check that the CSS parses
         run: uv run --no-project --with tinycss2==1.4.0 python -I scripts/check_css.py
 
+      # Node is preinstalled on the runner. The script parses js/hint.js as a
+      # module (through a .mjs copy, which every Node version reads as one) and
+      # tests termHint and termHintElement.
+      - name: Check that js/hint.js parses and its markup helpers work
+        run: |
+          node --version
+          node scripts/test-hint.mjs
+
       # Only the SVGs are compared. The PNGs and the ICO are rasterised by the
       # system libcairo and encoded by libpng and zlib, so their bytes can
       # differ between a laptop and the runner without any change to the

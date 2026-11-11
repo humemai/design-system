@@ -35,8 +35,8 @@ root=$(dirname "$here")
 # That happened while this script was written. --check compares against the
 # working tree as it is.
 if [ "$mode" = apply ]; then
-  if [ -n "$(git -C "$here" status --porcelain -- css logo assets export scripts)" ]; then
-    echo "✗ design-system has uncommitted changes in css/, logo/, assets/, export/ or scripts/; commit and merge first" >&2
+  if [ -n "$(git -C "$here" status --porcelain -- css js logo assets export scripts)" ]; then
+    echo "✗ design-system has uncommitted changes in css/, js/, logo/, assets/, export/ or scripts/; commit and merge first" >&2
     exit 1
   fi
   git -C "$here" fetch -q origin main
@@ -58,8 +58,8 @@ want=$(sed -n 's/^Hash:[[:space:]]*//p' "$stage/brand/VERSION.md")
 # diff exits 1 when it finds a difference, which is the point; under pipefail
 # that would end the script at the first stale copy.
 changed() {
-  { diff <(cd "$1" 2>/dev/null && find css logo assets export -type f -exec sha256sum {} + 2>/dev/null | LC_ALL=C sort -k2) \
-         <(cd "$2" && find css logo assets export -type f -exec sha256sum {} + | LC_ALL=C sort -k2) || true; } \
+  { diff <(cd "$1" 2>/dev/null && find css js logo assets export -type f -exec sha256sum {} + 2>/dev/null | LC_ALL=C sort -k2) \
+         <(cd "$2" && find css js logo assets export -type f -exec sha256sum {} + | LC_ALL=C sort -k2) || true; } \
     | sed -n 's/^[<>] [0-9a-f]*  //p' | LC_ALL=C sort -u
 }
 
