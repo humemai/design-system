@@ -35,6 +35,14 @@ PAIRS = [
     ("danger", "bg", TEXT), ("danger", "surface", TEXT),
     ("focus", "bg", NON_TEXT), ("focus", "surface", NON_TEXT),
     ("border-control", "bg", NON_TEXT), ("border-control", "surface", NON_TEXT),
+    # The "?" hint (.hm-hint): a muted mark (text-muted is checked above on
+    # every page surface) with a 3:1 border on whatever it sits on (a page, a
+    # card, a table head), brand ink and a focus ring on hover and focus, and a
+    # bubble of text and links on the raised surface.
+    ("border-control", "surface-muted", NON_TEXT), ("border-control", "surface-sunken", NON_TEXT),
+    ("brand", "surface-muted", TEXT), ("brand", "surface-sunken", TEXT),
+    ("focus", "surface-muted", NON_TEXT), ("focus", "surface-sunken", NON_TEXT),
+    ("text", "surface-raised", TEXT), ("link", "surface-raised", TEXT), ("link-hover", "surface-raised", TEXT),
 ]
 
 ASSETS = {

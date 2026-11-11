@@ -98,6 +98,14 @@ The website implements this in humemai/humem.ai#10 and records the numbers in it
 
 The README's Behaviour section copies the structure of Stateloop's design-system README (short imperative rules about how a page acts, each with how it is checked), not its look or its wording. The rules are written in HumemAI's own tokens and names. Two points are new here and not yet in any script: the 44px touch-target rule at 999px and narrower, and the filled `--hm-danger` confirm button. The section says plainly that only the focus and danger contrast pairings are checked by `scripts/check.py` today, and that the rest are conventions measured on the rendered page. Add a script check when a rule is broken in practice, as with the card grid.
 
+## Hint component (2026-11-11)
+
+`css/components.css` and `js/hint.js` hold the "?" hint: `.hm-hint` and `.hm-hint__bubble`, `bindHints`, `termHint` and `termHintElement` (humemai/design-system#12). The Humem Tower needs it for its lane names, state words and column heads ("Est.", "Starts after", "Done in", "Started"), and a native `title` tooltip never shows on a touch screen and cannot be reached by keyboard. A pattern a page needs goes here first and is vendored, like the colours and the card grid.
+
+The structure is mirrored from Stateloop's design system (its `.stl-hint` and `js/hint.js`, the rule of 2026-11-06, Stateloop design-system #334 and #181): the same Popover API behaviour, the same markup, the same rules for when to use it (never `title` alone, ONE legend hint in a list header, 1 sentence under about 140 characters, anything needed to act stays visible). The look is not: the hover, focus and open state are oxblood (rose in dark mode) where Stateloop's turn to the text colour, the border is `--hm-border-control` (3:1 on every page surface) where Stateloop's is a softer line, and the bubble has rounded corners. The tokens are HumemAI's own (`--hm-*`).
+
+Three semantic tokens are new for it: `--hm-surface-raised` (white in light, `--hm-neutral-800` in dark, so a bubble reads as lifted in both), `--hm-shadow-md`, and the two sizes `--hm-tap-min` (24px) and `--hm-tap-comfort` (44px). `scripts/check.py` checks the pairings the hint uses in both themes. `js/` is part of the vendored copy and of its hash, so `verify.sh` covers it. The JS is a plain ES module with no dependency; CI parses it and runs `scripts/test-hint.mjs`.
+
 ## Words: tagline and descriptor (2026-09-27)
 
 - **Tagline:** "Machines with human-like memory". Taewoon's line, first on the LinkedIn page. It's short, and it ties to the name (human + memory) and to the mark (a head holding a graph). On banners and cards it's the headline, in Newsreader.
