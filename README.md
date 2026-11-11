@@ -21,7 +21,8 @@ The reasons behind each choice are in [docs/decisions.md](docs/decisions.md). Wh
 ```
 css/tokens.css      colour ramps, neutrals, type, spacing, and the semantic layer for light and dark
 css/mkdocs.css      the theme for MkDocs Material documentation sites
-css/components.css  shared components: the card grid (equal-height rows) and its card, and the "?" hint
+css/base.css        opt-in base rules: the focus ring, the skip link (.hm-skip) and one reduced-motion rule
+css/components.css  shared components: the card grid (equal-height rows) and its card, the "?" hint, the table and its scroller, and the badge
 js/hint.js          the hint's behaviour (placing the bubble, hover) and termHint for a glossary; a plain ES module, no dependency
 assets/fonts.html   the Google Fonts block for plain HTML pages
 logo/               SVG masters: mark, tile, avatar, wordmark, lockups (light, dark, white)
@@ -32,8 +33,9 @@ scripts/check.py    checks the tokens, every contrast pairing, and the export si
 scripts/check_css.py  checks that every css/*.css file parses and its brackets balance
 scripts/test-hint.mjs  checks that js/hint.js parses as a module and that termHint gives the documented markup
 scripts/vendor-into.sh  copies the system (css, js, logo, assets, icons) into a site, with a pinned VERSION.md
-scripts/vendor-all.sh   vendors into every HumemAI repo at once, or reports which copies are behind
+scripts/vendor-all.sh   vendors into every consumer at once (the Tower included), or reports which copies are behind
 scripts/recolor.py  converts an illustration drawn in the 2024 teal and coral palette to oxblood and rose
+AGENTS.md           what to run before a push and the rules for an agent (CLAUDE.md just imports it)
 .github/workflows/check.yml  CI on every pull request and push to main: check.py, check_css.py, test-hint.mjs, and that logo/ and export/*.svg match build.py
 ```
 
@@ -56,7 +58,7 @@ Read the semantic names; the ramps exist for the semantic layer to point at.
 - **State:** `--hm-danger`, a burnt orange, always with words or an icon
 - **Type:** `--hm-font-display`, `--hm-font-text`, `--hm-font-mono`; sizes `--hm-text-xs` (12, labels only) to `--hm-text-4xl` on a 1.25 ratio, and `--hm-text-base` is 16px on phones and 17px from 1000px up
 - **Space:** a 4px grid, `--hm-space-1` (4px) to `--hm-space-24` (96px)
-- **Tap targets:** `--hm-tap-min` (24px, the floor for a mouse) and `--hm-tap-comfort` (44px, at 999px and narrower)
+- **Tap targets:** `--hm-tap-min` (24px, the floor for a mouse), `--hm-tap-comfort` (44px, at 999px and narrower) and `--hm-control-h` (the height of a button, input or select: 44px, and 36px from 1000px up). The rule is in Behaviour, "Touch targets".
 
 Dark mode follows the operating system. `data-theme="light"` or `"dark"` on `<html>` pins it.
 
@@ -64,7 +66,7 @@ Dark mode follows the operating system. `data-theme="light"` or `"dark"` on `<ht
 
 How a page acts, as opposed to how it looks. These rules apply to every HumemAI page and app. Today `scripts/check.py` checks only the contrast pairings (the focus ring, danger text, the hint) and `scripts/check_css.py` only that the CSS parses; everything else here is a convention, checked by measuring the rendered page.
 
-- **Touch targets.** Make every control at least 44×44px at 999px and narrower, by padding, not by a bigger font. This is a convention, not yet in a script.
+- **Touch targets.** Make every standalone control at least 44×44px at 999px and narrower, by padding, not by a bigger font: `min-height: var(--hm-control-h)`, which is 44px there and 36px from 1000px up, where a pointer is enough. Two numbers, two reasons. 24px (`--hm-tap-min`) is the WCAG 2.5.8 AA floor: below it a target fails. 44px (`--hm-tap-comfort`) is the comfortable target (WCAG 2.5.5 at AAA, and the size Apple and Android publish): the floor is where a target stops failing, 44 is where it stops being fiddly. A link inside a run of text is exempt from both, because its line sizes it. Use the tokens and no other number, so the same job does not come out at five heights. This is a convention, not yet in a script.
 - **Shorthand after longhand.** A shorthand (`font:`, `padding:`, `margin:`) after a longhand in the same block silently resets it. Search the block and every rule of higher specificity for the shorthand, and confirm by measuring the rendered element.
 - **Keep the reader's place.** After any action, notice, list reload or navigation, the page scroll, the position of any inner scroller and the focused element stay where they were. Measure `scrollY`, the inner scroll and `document.activeElement` before and after, at 1920 and 390 wide.
 - **Notices float.** A notice never moves the page. Move focus to it with `focus({preventScroll: true})`, and update lists in place.
@@ -117,9 +119,45 @@ head.append("Est. ", termHintElement(GLOSSARY, "est", "the estimate"));
 
 `scripts/check.py` checks the hint's contrast pairings in both themes, and `scripts/test-hint.mjs` checks that `js/hint.js` parses as a module and that `termHint` gives the documented markup. Hover, pinning, placement and the sizes are measured in a browser (numbers in humemai/design-system#12).
 
+## Base rules
+
+`css/base.css` is opt-in: load it after `tokens.css`. It sets no colour, font or margin on any element of its own.
+
+- **Focus ring.** `:focus-visible` gets a 2px `--hm-focus` outline, 2px off the edge (3:1 on every page surface, checked by `scripts/check.py`). Write no second copy.
+- **Skip link.** The first focusable thing on the page is `<a class="hm-skip" href="#main">Skip to content</a>`, and the target has `id="main"`. It is hidden until a keyboard focuses it, then fixed to the top left corner above a sticky header (`z-index: 100`), in link ink on the surface with a focus-colour border. A page with a sticky header sets `--hm-sticky-offset` on `:root` to the header's height, so the jump and any focus scroll land below it.
+- **Reduced motion.** Under `prefers-reduced-motion: reduce`, every transition and animation takes 0.01ms and `scroll-behavior` is `auto`. The duration is not 0 so an animation still ends in its last frame. A hover lift written as a `transform` is zeroed next to its component (`.hm-card` does).
+
+## Tables
+
+A data table is a `.hm-table` inside a `.hm-table-scroll`. Only the wrapper scrolls sideways, and a scroller has a name and a way in from the keyboard, so the wrapper carries `role="region"`, `tabindex="0"` and an `aria-label` naming the table. The system supplies the look, not those attributes.
+
+```html
+<div class="hm-table-scroll" role="region" tabindex="0" aria-label="Benchmark results">
+  <table class="hm-table">
+    <thead><tr><th scope="col">Lane</th><th scope="col" class="hm-num">Hours</th></tr></thead>
+    <tbody><tr><td>ingest</td><td class="hm-num">1.6</td></tr></tbody>
+  </table>
+</div>
+```
+
+- **Numbers.** A numeric column takes `.hm-num` on its cells and on its head, inside `.hm-table`: right-aligned, never wrapped, and DM Mono in the body cells. There is no `tabular-nums` on Schibsted Grotesk: the Humem Tower measured that its tabular figures also widen the punctuation ("1 . 6 h"), while its default figures are proportional ("1" is 5.8px and "0" is 10.4px at 17px), so a column of numbers uses the mono face.
+- **Sticky head.** `.hm-table--sticky-head` keeps the head row in view while the table scrolls down. It sticks to the wrapper, so give the wrapper a height of its own (`max-block-size: 70vh`).
+- **Not here.** Column widths and roles are the page's own: the Tower sets them from its cells, the website lays out wide tables in its own way (see `docs/decisions.md`, Wide content).
+
+## Badges
+
+`.hm-badge` is a state or a label as a pill: always the word, and a fill and a symbol as a second cue, never colour alone. It has three variants: `.hm-badge--brand` (filled oxblood: the active thing), `.hm-badge--danger` (the failed or overdue thing) and `.hm-badge--tint` (the held, paused or stale thing). With no variant it is a quiet outline. The pairing of each variant's text and fill is in `scripts/check.py`. The state-to-symbol map belongs to the app: put the symbol in a `::before` with an empty alt text (`content: "\25B6\FE0E" / ""`) so a screen reader reads the word, not the shape.
+
+```html
+<span class="hm-badge hm-badge--brand">running</span>
+<span class="hm-badge hm-badge--danger">failed</span>
+<span class="hm-badge hm-badge--tint">paused</span>
+<span class="hm-badge">idle</span>
+```
+
 ## Using it
 
-Four repositories carry a vendored copy: humem.ai, audit-ready-memory, humemai-docs, and arcadedb-embedded-python. After a change here is merged, update all of them from sibling checkouts in one run, then commit in each:
+Five repositories carry a vendored copy: humem.ai, audit-ready-memory, humemai-docs, arcadedb-embedded-python, and the Humem Tower (`control-plane`, which sits under `../tae898/` and is written as a path in `CONSUMERS`). After a change here is merged, update all of them from the checkouts in one run, then commit in each:
 
 ```bash
 scripts/vendor-all.sh --check   # which copies are behind, and which files differ
@@ -133,7 +171,7 @@ scripts/vendor-into.sh ../humem.ai/public/brand        # the website
 scripts/vendor-into.sh ../audit-ready-memory/docs/brand  # an MkDocs project
 ```
 
-The copy holds `css/`, `js/`, `logo/`, `assets/` and the icon files, and carries `verify.sh`, which fails if a vendored file was edited in place. `css/mkdocs.css` lists the `mkdocs.yml` settings that go with it.
+The copy holds `css/`, `js/`, `logo/`, `assets/` and the icon files, and carries `verify.sh`, which fails if a vendored file was edited in place. Each consumer runs it in its own checks (CI, or the pre-push script), so a hand edit of a copy fails there and not in review. `css/mkdocs.css` lists the `mkdocs.yml` settings that go with it.
 
 ## Where each asset goes
 

@@ -43,6 +43,12 @@ PAIRS = [
     ("brand", "surface-muted", TEXT), ("brand", "surface-sunken", TEXT),
     ("focus", "surface-muted", NON_TEXT), ("focus", "surface-sunken", NON_TEXT),
     ("text", "surface-raised", TEXT), ("link", "surface-raised", TEXT), ("link-hover", "surface-raised", TEXT),
+    # No new pairing is needed for the table, the badge and the skip link; each
+    # uses only pairings above. The table: text on surface and on surface-sunken
+    # (its head). The badge: text-muted on surface (plain), on-brand on brand,
+    # danger on surface, tint-text on tint, border-control, danger and brand on
+    # bg (its border against the page). The skip link: link on surface, and a
+    # focus border on bg and surface.
 ]
 
 ASSETS = {

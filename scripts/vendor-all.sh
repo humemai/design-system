@@ -4,18 +4,23 @@
 #   scripts/vendor-all.sh            re-vendor every copy that is behind
 #   scripts/vendor-all.sh --check    report only; exit 1 if any copy is behind
 #
-# The consumers are sibling checkouts of this repo (../<repo>). One run
-# replaces a vendor-into.sh call per repository, which is how copies went
-# stale: on 2026-10-02 four of the five were a social card behind (#3).
+# The consumers are checkouts beside this repo (../<repo>), or elsewhere under
+# the same repositories root when the entry gives a path (../tae898/control-plane,
+# the Humem Tower). One run replaces a vendor-into.sh call per repository, which
+# is how copies went stale: on 2026-10-02 four of the five were a social card
+# behind (#3).
 # Commit the result in each consumer; this script never commits or pushes.
 set -euo pipefail
 
-# <repo>:<brand directory inside it>
+# <repo>:<brand directory inside it>. <repo> is a directory name beside this
+# repo, or a path from this repo's parent, which may start with ../ to reach
+# another area (the Tower). Messages name the repo by its last path component.
 CONSUMERS=(
   "humem.ai:public/brand"
   "audit-ready-memory:docs/brand"
   "humemai-docs:brand"
   "arcadedb-embedded-python:bindings/python/docs/brand"
+  "../tae898/control-plane:src/controlplane/tower/static/brand"
 )
 
 mode=apply
@@ -68,21 +73,22 @@ skipped=0
 for entry in "${CONSUMERS[@]}"; do
   repo=${entry%%:*}
   rel=${entry#*:}
+  name=${repo##*/}
   dir="$root/$repo"
   dest="$dir/$rel"
   if ! git -C "$dir" rev-parse --git-dir >/dev/null 2>&1; then
-    echo "✗ $repo: no checkout at $dir"
+    echo "✗ $name: no checkout at $dir"
     skipped=1
     continue
   fi
   have=$(sed -n 's/^Hash:[[:space:]]*//p' "$dest/VERSION.md" 2>/dev/null || true)
   pinned=$(sed -n 's/^Commit:[[:space:]]*//p' "$dest/VERSION.md" 2>/dev/null | cut -c1-7 || true)
   if [ "$have" = "$want" ]; then
-    echo "✓ $repo: up to date (${pinned})"
+    echo "✓ $name: up to date (${pinned})"
     continue
   fi
   behind=1
-  echo "• $repo: behind (pinned ${pinned:-nothing}), differs in:"
+  echo "• $name: behind (pinned ${pinned:-nothing}), differs in:"
   changed "$dest" "$stage/brand" | sed 's/^/    /'
   [ "$mode" = check ] && continue
   if [ -n "$(git -C "$dir" status --porcelain -- "$rel")" ]; then
