@@ -97,6 +97,10 @@
      narrower a control is 44px (the Behaviour section of the README). */
   --hm-tap-min: 1.5rem;       /* 24 */
   --hm-tap-comfort: 2.75rem;  /* 44 */
+  /* The height of a button, input or select: --hm-tap-comfort (44) at 999px and
+     narrower, 36 from 1000px (the media block below), where a pointer is enough.
+     A control sets min-height: var(--hm-control-h) and pads the rest. */
+  --hm-control-h: var(--hm-tap-comfort);
 
   --hm-radius-sm: 0.375rem;
   --hm-radius-md: 0.625rem;
@@ -131,6 +135,7 @@
 @media (min-width: 1000px) {
   :root {
     --hm-text-base: 1.0625rem; /* 17 */
+    --hm-control-h: 2.25rem;   /* 36 */
   }
 }
 

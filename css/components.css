@@ -49,6 +49,11 @@
   .hm-card {
     transition: none;
   }
+
+  .hm-card:hover,
+  .hm-card:focus-visible {
+    transform: none;
+  }
 }
 
 /* Hint: a term's short explanation. A small ? beside the word, opened by hover
@@ -159,4 +164,115 @@
     height: var(--hm-tap-comfort);
     transform: translate(-50%, -50%);
   }
+}
+
+/* Table: a data table inside a scroller that a keyboard can reach. Mirrored
+   from the Humem Tower's tables (humemai/design-system#14); Stateloop's .stl-table
+   has no scroller, but its rule holds here too: a scroller has a name and a way
+   in from the keyboard. Wrap the table in .hm-table-scroll and give the wrapper
+   role="region", tabindex="0" and an aria-label naming the table; without them
+   a keyboard cannot scroll a wide table (the benchmark scroller on humem.ai
+   lacked all three). Only the wrapper scrolls, so the page never does. The
+   table is border-collapse: separate with no spacing, not collapse, because a
+   collapsed table drops the borders of a sticky header cell when it scrolls.
+   Text is --hm-text-sm (14px), the system's table size. Column widths are the
+   page's own: the Tower sets them by column role, the website by layout, and
+   neither belongs here. */
+.hm-table-scroll {
+  margin: 0 0 var(--hm-space-4);
+  overflow-x: auto;
+  background: var(--hm-surface);
+  border: 1px solid var(--hm-border);
+  border-radius: var(--hm-radius-md);
+}
+
+.hm-table {
+  inline-size: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: var(--hm-text-sm);
+  line-height: 1.4;
+}
+
+.hm-table th,
+.hm-table td {
+  padding: var(--hm-space-1) var(--hm-space-2);
+  border-bottom: 1px solid var(--hm-border);
+  text-align: left;
+  vertical-align: top;
+  overflow-wrap: break-word;
+}
+
+.hm-table th {
+  background: var(--hm-surface-sunken);
+  border-bottom: 2px solid var(--hm-border-strong);
+  font-weight: var(--hm-weight-semibold);
+}
+
+.hm-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+/* Optional: the header row stays in view while the table scrolls down. It
+   sticks to the wrapper, so the wrapper needs a height of its own, for example
+   max-block-size: 70vh; a wrapper as tall as its table has nothing to scroll. */
+.hm-table--sticky-head thead th {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: 1;
+}
+
+/* A numeric column: against the right edge, so units and decimal points line
+   up, and in DM Mono. Schibsted Grotesk's default figures are proportional (the
+   Tower measured "1" at 5.8px and "0" at 10.4px at 17px), and its tabular
+   figures also widen the punctuation ("1 . 6 h"), so no tabular-nums here: the
+   cell takes the mono face. The header cell aligns right and keeps its own face. */
+.hm-table .hm-num {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.hm-table td.hm-num {
+  font-family: var(--hm-font-mono);
+}
+
+/* Badge: a state or a label as a pill. The word is always there; the fill and a
+   symbol are a second cue, never colour alone. Three variants, because the brand
+   has one voice and one warning: brand (filled, the active or running thing),
+   danger (the failed or overdue thing), tint (the held, paused or stale thing).
+   With no variant it is a quiet outline. The pairings (text on its own fill,
+   border on the page) are in scripts/check.py. A symbol is the consumer's: put it
+   in a ::before with an empty alt, content: "\25B6\FE0E" / "", so a screen reader
+   reads the word, not the shape (the Tower maps its nine states this way). */
+.hm-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--hm-space-1);
+  padding: 0 var(--hm-space-2);
+  background: var(--hm-surface);
+  border: 1px solid var(--hm-border-control);
+  border-radius: var(--hm-radius-pill);
+  color: var(--hm-text-muted);
+  font-size: var(--hm-text-sm);
+  font-weight: var(--hm-weight-semibold);
+  line-height: 1.5;
+  white-space: nowrap;
+}
+
+.hm-badge--brand {
+  background: var(--hm-brand);
+  border-color: var(--hm-brand);
+  color: var(--hm-on-brand);
+}
+
+.hm-badge--danger {
+  border-color: var(--hm-danger);
+  color: var(--hm-danger);
+}
+
+.hm-badge--tint {
+  background: var(--hm-tint);
+  border-color: var(--hm-tint-text);
+  color: var(--hm-tint-text);
 }
