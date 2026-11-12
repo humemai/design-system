@@ -1,0 +1,12 @@
+/* Fails [container]: a container on a flex item, an inline-block or a float is 0 wide; size needs a height. */
+.card-cell {
+  flex: 1 1 auto;
+  container-type: inline-size;
+}
+.inline-cell {
+  display: inline-block;
+  container: card / inline-size;
+}
+.size-cell {
+  container-type: size;
+}

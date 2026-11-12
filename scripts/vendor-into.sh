@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copy the design system into a consumer, with a VERSION.md that pins it.
+# Copy the design system into a consumer, with a VERSION.md that pins it (version, commit, hash).
 #
 #   scripts/vendor-into.sh <dest>
 #
@@ -19,8 +19,8 @@ dest=${1:?usage: vendor-into.sh <dest>}
 mkdir -p "$dest"
 dest=$(cd "$dest" && pwd)
 cd "$(dirname "$0")/.."
-if [ -n "$(git status --porcelain -- css js logo assets export)" ]; then
-  echo "✗ css/, js/, logo/, assets/ or export/ has uncommitted changes; commit first" >&2
+if [ -n "$(git status --porcelain -- css js logo assets export pyproject.toml)" ]; then
+  echo "✗ css/, js/, logo/, assets/, export/ or pyproject.toml has uncommitted changes; commit first" >&2
   exit 1
 fi
 
@@ -35,6 +35,8 @@ cp export/favicon.svg export/favicon.ico export/apple-touch-icon.png \
    export/og-1200x630.png "$dest/export/"
 cp scripts/verify.sh "$dest/verify.sh"
 
+version=$(sed -n 's/^version = "\(.*\)"$/\1/p' pyproject.toml | head -1)
+[ -n "$version" ] || { echo "✗ no version in pyproject.toml" >&2; exit 1; }
 hash=$(cd "$dest" && find css js logo assets export -type f | LC_ALL=C sort | xargs sha256sum | sha256sum | awk '{print $1}')
 cat > "$dest/VERSION.md" <<VERSION
 # HumemAI design system (vendored copy)
@@ -42,8 +44,9 @@ cat > "$dest/VERSION.md" <<VERSION
 Do not edit these files here. Change them in github.com/humemai/design-system,
 then vendor again. \`./verify.sh\` checks this copy against the hash below.
 
+Version: $version
 Commit: $(git rev-parse HEAD)
 Date: $(git log -1 --format=%cs)
 Hash: $hash
 VERSION
-echo "✓ vendored $(git rev-parse --short HEAD) into $dest"
+echo "✓ vendored $version ($(git rev-parse --short HEAD)) into $dest"

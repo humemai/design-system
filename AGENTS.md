@@ -5,8 +5,11 @@ The HumemAI brand in one repository: tokens, components, the logo and the export
 ## Before you push
 
 - `uv sync --locked`, then `uv run python scripts/check.py` and `uv run --no-project --with tinycss2==1.4.0 python -I scripts/check_css.py`.
+- `uv run --no-project --with tinycss2==1.4.0 python -I scripts/check_css.py --self-test`: every static layout rule fails on its fixture.
 - `node scripts/test-hint.mjs`.
+- `uv run python scripts/check_layout.py`, then `--self-test`: the headless Chrome layout smoke and its bad variants.
 - `uv run python scripts/build.py`, then `git status --porcelain -- logo 'export/*.svg'` must print nothing.
+- A change to what a copy holds bumps `version` in `pyproject.toml` and adds a `CHANGELOG.md` section; tag the merge commit with the bare version (`0.2.0`, no `v`).
 - After a merge to `main`: pull the checkout, then `scripts/vendor-all.sh --check`. A copy that is behind is a pull request in that repository (`scripts/vendor-into.sh`, then its own checks).
 
 ## Rules

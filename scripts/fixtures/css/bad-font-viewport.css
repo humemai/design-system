@@ -1,0 +1,3 @@
+/* Fails [font-viewport]: a font size in vw does not follow the reader's zoom (WCAG F94). */
+.title { font-size: clamp(2rem, 5vw, 4rem); }
+:root { --hm-text-hero: clamp(2rem, 8vmin, 4rem); }

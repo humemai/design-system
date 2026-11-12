@@ -1,0 +1,9 @@
+/* Fails [column-height]: a box with a height adds columns sideways, a Reflow failure at 320px. */
+.note {
+  column-width: 20rem;
+  height: 12rem;
+}
+.note-b {
+  column-width: 20rem;
+  column-fill: auto;
+}
