@@ -1,0 +1,4 @@
+/* Fails [media-range]: min-width and max-width leave a gap at 999.5px; use the range syntax. */
+@media (min-width: 62.5rem) {
+  .a { color: red; }
+}

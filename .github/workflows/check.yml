@@ -36,6 +36,17 @@ jobs:
       - name: Check that the CSS parses
         run: uv run --no-project --with tinycss2==1.4.0 python -I scripts/check_css.py
 
+      - name: Check that every static layout rule fails on its fixture
+        run: uv run --no-project --with tinycss2==1.4.0 python -I scripts/check_css.py --self-test
+
+      # The runner has Google Chrome; Playwright drives it (channel "chrome"), so
+      # no browser is downloaded. The page is scripts/fixtures/layout/page.html.
+      - name: Check the layout in headless Chrome
+        run: |
+          google-chrome --version
+          uv run python scripts/check_layout.py
+          uv run python scripts/check_layout.py --self-test
+
       # Node is preinstalled on the runner. The script parses js/hint.js as a
       # module (through a .mjs copy, which every Node version reads as one) and
       # tests termHint and termHintElement.

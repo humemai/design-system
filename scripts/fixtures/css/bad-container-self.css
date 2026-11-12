@@ -1,0 +1,9 @@
+/* Fails [container-self]: a container cannot style itself, so this rule never applies. */
+.fit {
+  container: fit / inline-size;
+}
+@container fit (width >= 40rem) {
+  .fit {
+    padding: 2rem;
+  }
+}

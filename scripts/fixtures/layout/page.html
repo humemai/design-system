@@ -1,0 +1,66 @@
+<!doctype html>
+<!-- The good page for scripts/check_layout.py: every layout class of the README,
+     used the documented way. The checks measure it in headless Chrome at several
+     widths and root font sizes. The bad variants are this page with one defect
+     each (BAD in the script). Not a demo: nothing here is meant to be pretty. -->
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Layout fixture</title>
+  <link rel="stylesheet" href="../../../css/tokens.css">
+  <link rel="stylesheet" href="../../../css/base.css">
+  <link rel="stylesheet" href="../../../css/layout.css">
+  <link rel="stylesheet" href="../../../css/components.css">
+  <style>
+    body { margin: 0; background: var(--hm-bg); color: var(--hm-text); font: var(--hm-text-base) / var(--hm-leading-body) var(--hm-font-text); }
+    #probe { font-size: var(--hm-text-base); min-block-size: var(--hm-control-h); padding-inline: var(--hm-page-gutter); }
+    #table th { white-space: nowrap; }
+  </style>
+</head>
+<body>
+  <div id="probe"></div>
+  <main class="hm-container" id="frame">
+    <h1 style="font-family: var(--hm-font-display); font-size: var(--hm-text-display);">Layout</h1>
+    <p class="hm-measure" id="prose">Memory is what an agent keeps beyond one prompt: what happened, what matters now, and how structured knowledge stays available over time. This paragraph is long enough to fill the measure on a wide screen, so the width of its box is the measure and not the width of the page. It is one column at every size, because prose in two columns makes a reader scroll back up for the second one, and a box with a height adds columns sideways. A line of about eighty characters in the body face is where the system settled, so the box is capped at sixty-eight zeros.</p>
+
+    <section class="hm-split" id="split">
+      <div class="hm-split__label"><h2>Why memory</h2></div>
+      <div class="hm-split__body"><p>The content column is capped at the measure and, from 1000px, sits beside its label. Below that the label comes first and the content follows it.</p></div>
+    </section>
+
+    <div class="hm-card-grid" id="cards">
+      <a class="hm-card" href="#"><h3>One</h3><p>A short card.</p><span>Read more</span></a>
+      <a class="hm-card" href="#"><h3>Two</h3><p>A card with a longer description that wraps onto several lines in a narrow column, so its middle row is taller than its neighbours.</p><span>Read more</span></a>
+      <a class="hm-card" href="#"><h3>Three</h3><p>Medium text for a card, a sentence or two long, enough to wrap once or twice.</p><span>Read more</span></a>
+      <a class="hm-card" href="#"><h3>Four</h3><p>Short.</p><span>Read more</span></a>
+      <a class="hm-card" href="#"><h3>Five</h3><p>The last row holds one short card, which is where the equal-height rule was first broken.</p><span>Read more</span></a>
+    </div>
+
+    <div class="hm-cols" id="cols">
+      <div>Independent item one.</div>
+      <div>Independent item two with a few more words in it.</div>
+      <div>Item three.</div>
+      <div>Item four, a little longer than the others, to wrap in a narrow column.</div>
+    </div>
+
+    <div class="hm-fit" id="fit">
+      <div class="hm-fit__pair">
+        <div>The first part of a note.</div>
+        <div>The second part sits beside it when the box is 40rem wide.</div>
+      </div>
+    </div>
+
+    <p><button class="hm-hint" id="hint" type="button" aria-label="What is this?">?</button></p>
+
+    <div class="hm-table-scroll" id="scroller" role="region" tabindex="0" aria-label="Wide results">
+      <table class="hm-table" id="table">
+        <thead><tr><th scope="col">Engine</th><th scope="col">Ingest rate</th><th scope="col">Query latency</th><th scope="col">Peak memory</th><th scope="col">Index build</th><th scope="col">Cold start</th><th scope="col">Warm start</th><th scope="col">Disk usage</th><th scope="col">Recall at ten</th><th scope="col">Throughput</th></tr></thead>
+        <tbody><tr><td>arcadedb</td><td class="hm-num">1.6</td><td class="hm-num">2.1</td><td class="hm-num">3.4</td><td class="hm-num">4.2</td><td class="hm-num">5.0</td><td class="hm-num">6.3</td><td class="hm-num">7.7</td><td class="hm-num">8.1</td><td class="hm-num">9.9</td></tr></tbody>
+      </table>
+    </div>
+  </main>
+
+  <div class="hm-container hm-container--wide" id="wide"><p>A page that is mostly tables.</p></div>
+</body>
+</html>

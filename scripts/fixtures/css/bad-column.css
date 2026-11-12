@@ -1,0 +1,4 @@
+/* Fails [column]: prose is one column. */
+.prose { column-count: 2; }
+.prose-b { columns: 2 20rem; }
+.list { column-width: 300px; }

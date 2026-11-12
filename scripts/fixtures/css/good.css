@@ -1,0 +1,19 @@
+/* Passes every rule: the patterns the README allows. */
+@media (width >= 62.5rem) {
+  .split { grid-template-columns: minmax(0, 1fr) minmax(18rem, 30rem); }
+}
+@media (width < 37.5rem) and (prefers-reduced-motion: reduce) {
+  .a { transition: none; }
+}
+.cols { grid-template-columns: repeat(auto-fit, minmax(min(100%, var(--hm-col-min)), 1fr)); }
+.fixed { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.glossary { column-width: 16rem; column-gap: 1.5rem; }
+.fit { container: fit / inline-size; display: block; }
+.fit-pair { display: grid; }
+@container fit (width >= 40rem) {
+  .fit-pair { grid-template-columns: 1fr 1fr; }
+  .fit .child { padding: 1rem; }
+}
+.title { font-size: clamp(2rem, 1rem + 2rem, 4rem); }
+:root { --hm-text-display: clamp(2.4375rem, 6vw, 4.75rem); }
+.tall { height: 12rem; overflow: auto; }

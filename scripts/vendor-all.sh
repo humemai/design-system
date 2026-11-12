@@ -40,7 +40,7 @@ root=$(dirname "$here")
 # That happened while this script was written. --check compares against the
 # working tree as it is.
 if [ "$mode" = apply ]; then
-  if [ -n "$(git -C "$here" status --porcelain -- css js logo assets export scripts)" ]; then
+  if [ -n "$(git -C "$here" status --porcelain -- css js logo assets export scripts pyproject.toml)" ]; then
     echo "✗ design-system has uncommitted changes in css/, js/, logo/, assets/, export/ or scripts/; commit and merge first" >&2
     exit 1
   fi
@@ -58,6 +58,8 @@ stage=$(mktemp -d)
 trap 'rm -rf "$stage"' EXIT
 "$here/scripts/vendor-into.sh" "$stage/brand" >/dev/null
 want=$(sed -n 's/^Hash:[[:space:]]*//p' "$stage/brand/VERSION.md")
+want_version=$(sed -n 's/^Version:[[:space:]]*//p' "$stage/brand/VERSION.md")
+echo "design system $want_version ($(git -C "$here" rev-parse --short HEAD))"
 
 # Files that differ between a copy and the staged one, relative to the copy.
 # diff exits 1 when it finds a difference, which is the point; under pipefail
@@ -83,6 +85,8 @@ for entry in "${CONSUMERS[@]}"; do
   fi
   have=$(sed -n 's/^Hash:[[:space:]]*//p' "$dest/VERSION.md" 2>/dev/null || true)
   pinned=$(sed -n 's/^Commit:[[:space:]]*//p' "$dest/VERSION.md" 2>/dev/null | cut -c1-7 || true)
+  pinned_version=$(sed -n 's/^Version:[[:space:]]*//p' "$dest/VERSION.md" 2>/dev/null || true)
+  pinned="${pinned}${pinned_version:+, $pinned_version}"
   if [ "$have" = "$want" ]; then
     echo "✓ $name: up to date (${pinned})"
     continue

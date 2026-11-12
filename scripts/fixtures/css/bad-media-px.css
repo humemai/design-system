@@ -1,0 +1,7 @@
+/* Fails [media-px]: the width is in px, which ignores the reader's default font size. */
+@media (width >= 1000px) {
+  .a { color: red; }
+}
+@media (max-width: 999px) {
+  .a { color: blue; }
+}

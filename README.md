@@ -22,6 +22,7 @@ The reasons behind each choice are in [docs/decisions.md](docs/decisions.md). Wh
 css/tokens.css      colour ramps, neutrals, type, spacing, and the semantic layer for light and dark
 css/mkdocs.css      the theme for MkDocs Material documentation sites
 css/base.css        opt-in base rules: the focus ring, the skip link (.hm-skip) and one reduced-motion rule
+css/layout.css      opt-in layout: the page container (and its wide variant), the measure, the column grid, the split and the container-query box
 css/components.css  shared components: the card grid (equal-height rows) and its card, the "?" hint, the table and its scroller, and the badge
 js/hint.js          the hint's behaviour (placing the bubble, hover) and termHint for a glossary; a plain ES module, no dependency
 assets/fonts.html   the Google Fonts block for plain HTML pages
@@ -30,13 +31,16 @@ export/             PNG, ICO and social images, generated from logo/ and the fon
 fonts/              the two brand fonts (SIL Open Font License), used to outline text
 scripts/build.py    generates logo/ and export/
 scripts/check.py    checks the tokens, every contrast pairing, and the export sizes
-scripts/check_css.py  checks that every css/*.css file parses and its brackets balance
+scripts/check_css.py  checks that every css/*.css file parses, its brackets balance, and the layout rules hold (no px in a media query, no multi-column prose, a guarded auto-fit, a block container); --self-test runs its fixtures
+scripts/check_layout.py  measures the layout classes in headless Chrome at several widths and root font sizes; --self-test runs its bad variants
+scripts/fixtures/   the fixtures the checks fail on: css/bad-*.css, and layout/page.html with its bad variants in the script
 scripts/test-hint.mjs  checks that js/hint.js parses as a module and that termHint gives the documented markup
-scripts/vendor-into.sh  copies the system (css, js, logo, assets, icons) into a site, with a pinned VERSION.md
+scripts/vendor-into.sh  copies the system (css, js, logo, assets, icons) into a site, with a pinned VERSION.md (version, commit, hash)
 scripts/vendor-all.sh   vendors into every consumer at once (the Tower included), or reports which copies are behind
 scripts/recolor.py  converts an illustration drawn in the 2024 teal and coral palette to oxblood and rose
+CHANGELOG.md        what each version changed
 AGENTS.md           what to run before a push and the rules for an agent (CLAUDE.md just imports it)
-.github/workflows/check.yml  CI on every pull request and push to main: check.py, check_css.py, test-hint.mjs, and that logo/ and export/*.svg match build.py
+.github/workflows/check.yml  CI on every pull request and push to main: check.py, check_css.py and its fixtures, check_layout.py and its variants, test-hint.mjs, and that logo/ and export/*.svg match build.py
 ```
 
 Nothing in `logo/` or `export/` is edited by hand. Change `scripts/build.py`, then:
@@ -58,9 +62,35 @@ Read the semantic names; the ramps exist for the semantic layer to point at.
 - **State:** `--hm-danger`, a burnt orange, always with words or an icon
 - **Type:** `--hm-font-display`, `--hm-font-text`, `--hm-font-mono`; sizes `--hm-text-xs` (12, labels only) to `--hm-text-4xl` on a 1.25 ratio, and `--hm-text-base` is 16px on phones and 17px from 1000px up
 - **Space:** a 4px grid, `--hm-space-1` (4px) to `--hm-space-24` (96px)
+- **Layout:** `--hm-page-max` (1180px) and `--hm-page-max-wide` (1552px), `--hm-page-gutter` (16px, 24px from 600px), `--hm-col-min` (the narrowest column), `--hm-split-label-max` and `--hm-split-body-max`. The size classes and the classes that use these are in "Layout across screen sizes".
 - **Tap targets:** `--hm-tap-min` (24px, the floor for a mouse), `--hm-tap-comfort` (44px, at 999px and narrower) and `--hm-control-h` (the height of a button, input or select: 44px, and 36px from 1000px up). The rule is in Behaviour, "Touch targets".
 
 Dark mode follows the operating system. `data-theme="light"` or `"dark"` on `<html>` pins it.
+
+## Layout across screen sizes
+
+How a page holds its content at every screen size. The classes are in `css/layout.css` (opt-in: load it after `tokens.css`), the tokens in `css/tokens.css`, the reasons and the sources in `docs/decisions.md` ("Layout across screen sizes", 2026-11-12), and `scripts/check_layout.py` measures them in a browser.
+
+- **Four size classes, in rem.** Under 600px (`(width < 37.5rem)`), 600 to 999 (`(width >= 37.5rem)`), 1000 to 1599 (`(width >= 62.5rem)`) and 1600 and up (`(width >= 100rem)`). Write a media query in `rem` and in the range syntax, never in `px`: a `px` query ignores the reader's default font size, a `rem` one follows it, and the range syntax leaves no gap at 999.5px. `scripts/check_css.py` rejects a `px` length and `min-width` or `max-width` in a media condition. The page's layout follows the window (a media query); a card or a note follows the width its parent gives it (a container query, below). Today the 600 step sets the page gutter, and the 1000 step sets the 17px body, the 36px control and the split.
+- **Page container.** `.hm-container` is a block that is `--hm-page-max` (73.75rem, 1180px) wide at most, centred, with `--hm-page-gutter` on each side (16px under 600px, 24px from 600px). The gutter sits outside the cap, so the content is exactly 1180px wide at 1440 and at 2560: extra width becomes margin, not more content. `.hm-container--wide` is for a page that is mostly tables: the content is `--hm-page-max-wide` (97rem, 1552px) wide at most, and the frame grows to 90% of the screen beyond that, because a data table is limited by the screen and not by the frame (`docs/decisions.md`, "Wide content"). Prose does not grow with it.
+- **Prose is one column at the measure.** `.hm-measure` caps a block at `--hm-measure` (68ch, about 80 characters), at every size. Never flow prose into columns.
+- **Columns for independent items.** `.hm-cols` is `repeat(auto-fit, minmax(min(100%, var(--hm-col-min)), 1fr))` with a `--hm-space-5` gap: as many columns as fit, none narrower than `--hm-col-min` (16.25rem), one column when the box is narrower. The `min(100%, ...)` is required in every `auto-fit` or `auto-fill` track: a bare `minmax(16.25rem, 1fr)` overflowed a 320px window at a 200% root font size. Cards that share one height use `.hm-card-grid` (same rule, equal rows, same card markup).
+- **Split.** `.hm-split` puts a label or title (`.hm-split__label`, at most `--hm-split-label-max`, 34rem) and its content (`.hm-split__body`) side by side from 1000px, stacked below with the label first. The content column is 18rem to `--hm-split-body-max` (30rem) and never wider than the measure, as in the "Why memory" sections of humem.ai.
+- **Fit: container queries for a card or a note.** `.hm-fit` is a container (`container: hm-fit / inline-size`) and `.hm-fit__pair` is one column that becomes two when `.hm-fit` is 40rem wide, so the same markup works in a narrow aside and in a wide page. The base is one column, so a browser without container queries is still correct. Three rules: put `.hm-fit` on a block wrapper with a width, never on a flex item, an inline-block or a float (inline-size containment gives such a box a width of 0); a container cannot style itself, so the card or note sits inside it; name every container.
+- **No multi-column text.** Not for prose and never in a box with a height: extra columns are added sideways, which scrolls a page at 320px (a 12rem box gave a `scrollWidth` of 3709 at 1000px), and the reader must scroll back up for the second column. The one allowed use is `column-width` in `rem` on a list of short items with no height (a glossary, a row of tags). `scripts/check_css.py` rejects `column-count`, `columns`, a `column-width` that is not in `rem`, and any multi-column box with a height.
+- **Tables** keep their rule (the Tables section): they may be wider than the measure, and a keyboard-focusable scroller is compliant, because WCAG 1.4.10 excepts data tables. A page of tables takes `.hm-container--wide`.
+
+```html
+<main class="hm-container hm-container--wide" id="main">
+  <section class="hm-split">
+    <div class="hm-split__label"><h2>Why memory</h2></div>
+    <div class="hm-split__body"><p class="hm-measure">...</p></div>
+  </section>
+  <div class="hm-card-grid"><a class="hm-card" href="/a">...</a></div>
+</main>
+```
+
+`scripts/check_layout.py` loads `scripts/fixtures/layout/page.html` in headless Chrome and measures: the page never scrolls sideways at 320, 360, 768, 1280 and 2560px wide and at a 100% and a 200% root font size; only a named `.hm-table-scroll` scrolls sideways, and a wide table scrolls inside it; cards in a grid share one height; prose is the measure wide; a container is not 0 wide at 320px, and the page fits with every `@container` rule removed; the size classes switch at exactly 600 and 1000px (1600 is named and nothing reads it yet); the container is 1180px of content at 1440 and 2560. It is not yet checked: text spacing (WCAG 1.4.12), target sizes at 320px, focus under a sticky header, forced colours. Those are listed in `docs/decisions.md`.
 
 ## Behaviour
 
@@ -171,7 +201,7 @@ scripts/vendor-into.sh ../humem.ai/public/brand        # the website
 scripts/vendor-into.sh ../audit-ready-memory/docs/brand  # an MkDocs project
 ```
 
-The copy holds `css/`, `js/`, `logo/`, `assets/` and the icon files, and carries `verify.sh`, which fails if a vendored file was edited in place. Each consumer runs it in its own checks (CI, or the pre-push script), so a hand edit of a copy fails there and not in review. `css/mkdocs.css` lists the `mkdocs.yml` settings that go with it.
+The copy holds `css/`, `js/`, `logo/`, `assets/` and the icon files, and carries `verify.sh`, which fails if a vendored file was edited in place. Its `VERSION.md` records the design system's version (`Version:`, from `pyproject.toml`), the commit and the hash. Bump the version in the pull request that changes what a copy holds, and tag the merge commit with the bare version, no `v` (`0.2.0`); `CHANGELOG.md` says what each version changed. Each consumer runs it in its own checks (CI, or the pre-push script), so a hand edit of a copy fails there and not in review. `css/mkdocs.css` lists the `mkdocs.yml` settings that go with it.
 
 ## Where each asset goes
 
@@ -191,7 +221,7 @@ The copy holds `css/`, `js/`, `logo/`, `assets/` and the icon files, and carries
 
 ## Checking pages
 
-Review pages at these sizes (CSS pixels): 360×800 and 390×844 (phones), 768×1024 (tablet), 984×1092 (unfolded foldable), 1280×720 (laptop), and 1920×1080 (desktop, the main review size). Prose stays at the measure on every screen; data tables may be wider (see `docs/decisions.md`, Wide content).
+Review pages at these sizes (CSS pixels): 360×800 and 390×844 (phones), 768×1024 (tablet), 984×1092 (unfolded foldable), 1280×720 (laptop), 1920×1080 (desktop, the main review size) and 2560×1440 (a large monitor: the page stays a centred 1180px and the rest is margin). Then two zoom checks, because a size alone does not show them: 320 CSS px wide (a 1280px window at 400% zoom), where the page must not scroll sideways except inside a table's own scroller, and a 200% root font size (`html { font-size: 200% }`) at 320 and at 1280, where nothing may be clipped or overlap. `scripts/check_layout.py` does the width and root-size part on the fixture page; do it by hand on a real page. Prose stays at the measure on every screen; data tables may be wider (see `docs/decisions.md`, Wide content).
 
 ## Licence
 
