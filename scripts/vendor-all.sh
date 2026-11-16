@@ -5,7 +5,7 @@
 #   scripts/vendor-all.sh --check    report only; exit 1 if any copy is behind
 #
 # The consumers are checkouts beside this repo (../<repo>), or elsewhere under
-# the same repositories root when the entry gives a path (../tae898/control-plane,
+# the same repositories root when the entry gives a path (../tae898/humem-ops,
 # the Humem Tower). One run replaces a vendor-into.sh call per repository, which
 # is how copies went stale: on 2026-10-02 four of the five were a social card
 # behind (#3).
@@ -20,7 +20,7 @@ CONSUMERS=(
   "audit-ready-memory:docs/brand"
   "humemai-docs:brand"
   "arcadedb-embedded-python:bindings/python/docs/brand"
-  "../tae898/control-plane:src/controlplane/tower/static/brand"
+  "../tae898/humem-ops:src/controlplane/tower/static/brand"
 )
 
 mode=apply
