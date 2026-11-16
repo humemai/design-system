@@ -170,9 +170,33 @@ A data table is a `.hm-table` inside a `.hm-table-scroll`. Only the wrapper scro
 </div>
 ```
 
-- **Numbers.** A numeric column takes `.hm-num` on its cells and on its head, inside `.hm-table`: right-aligned, never wrapped, and DM Mono in the body cells. There is no `tabular-nums` on Schibsted Grotesk: the Humem Tower measured that its tabular figures also widen the punctuation ("1 . 6 h"), while its default figures are proportional ("1" is 5.8px and "0" is 10.4px at 17px), so a column of numbers uses the mono face.
+- **Numbers.** A numeric column takes `.hm-num` on its cells and on its head, inside `.hm-table`: right-aligned, never wrapped, and DM Mono in the body cells. There is no `tabular-nums` on Schibsted Grotesk: the Humem Tower measured that its tabular figures also widen the punctuation ("1 . 6 h"), while its default figures are proportional ("1" is 5.8px and "0" is 10.4px at 17px), so a column of numbers uses the mono face. How many digits a number has and where its unit goes: Data display.
 - **Sticky head.** `.hm-table--sticky-head` keeps the head row in view while the table scrolls down. It sticks to the wrapper, so give the wrapper a height of its own (`max-block-size: 70vh`).
 - **Not here.** Column widths and roles are the page's own: the Tower sets them from its cells, the website lays out wide tables in its own way (see `docs/decisions.md`, Wide content).
+
+## Data display
+
+How an interface shows a number, a unit, a duration, a date, an identifier or a missing value. One reader should not have to learn a second convention on the next page. The rules are for operational and status displays; evidence has its own rule (rule 2).
+
+1. **Alignment and face.** A numeric column is right aligned in DM Mono (`.hm-num`, see Tables) with the same number of decimals in every cell. The unit is in the column header, not repeated in each cell: the digits stay comparable, and the header is read once. GOV.UK's table component gives the right-alignment rule: [align numbers to the right](https://design-system.service.gov.uk/components/table/).
+2. **Precision follows accuracy.** A status or operational display shows at most 3 significant digits, integers as integers, no trailing zeros and no exponent. A count is an integer. Evidence and result tables (benchmarks, papers, the MMDBBench pages) are the exception: they show the digits their analysis supports, copied from the result file together with the interval, never display-rounded. A figure that is rounded for a status line and a figure that is a result must not be mixed up, so a page says which of the two it is.
+3. **Durations.** Under 1 h, whole minutes (`4 min`, `under 1 min`). From 1 h to under 10 h, one decimal without a trailing `.0` (`1.5 h`, `2 h`). From 10 h, whole hours (`13 h`). A span over 48 h is written in days (`3 d`). A small step is not worth a digit the reader cannot act on.
+4. **Units.** An SI symbol follows the number after a space (`1.5 h`, `12 GB`, `70 °C`); [NIST's SI checklist, rule 15](https://physics.nist.gov/cuu/Units/checklist.html) states the space. Percent is attached (`12%`), as in the [GOV.UK style guide](https://guidance.publishing.service.gov.uk/writing-to-gov-uk-standards/style-guides/a-to-z-style-guide/). The decimal marker is a point and 1,000 and above take a comma, also from the GOV.UK style guide. Two choices differ from a source on purpose: SI writes `12 %` with a space and groups digits with a thin space, not a comma (NIST, rule 16), and GOV.UK writes `3,500kg` with no space and uses the 12 hour clock. The comma is the form readers already know on a screen. GB means 10⁹ bytes and GiB means 2³⁰ bytes ([NIST on binary prefixes](https://physics.nist.gov/cuu/Units/binary.html)); a view never mixes them.
+5. **Dates and times.** Dates are [ISO 8601](https://en.wikipedia.org/wiki/ISO_8601) (`2026-11-16`) and the clock has 24 hours (`07:58`). The zone is named once per view (`KST` or `UTC`) and never mixed with another. A relative form (`4 min ago`) carries the absolute time as its title text, so it can be read and copied.
+6. **Identifiers.** A commit SHA shows 7 to 10 characters, and the full value is in the title or copyable. Paths and ids are DM Mono. A shortened value is cut in the middle with an ellipsis (`control-plane/…/hours.py`) and carries its full value, never silently clipped by `overflow`.
+7. **Empty and unknown.** Say the word: `none`, `unknown` or `not measured`, never a blank cell. A `0` is only a real zero. A dash is not a placeholder: it reads as a minus sign or as a range. A view keeps one vocabulary, so `none` does not become `n/a` three columns later.
+8. **Status.** A status always has a text label, and colour (or a symbol) is only the second cue, which is WCAG's [Use of Color](https://www.w3.org/WAI/WCAG22/Understanding/use-of-color.html) (1.4.1: colour is not the only visual means of conveying information). The same word means the same state everywhere. The badge (`.hm-badge`) is the component for it.
+9. **The slashed zero.** DM Mono has one zero glyph, and it is slashed by design: the font has no plain zero and no OpenType feature that swaps it (its `GSUB` features are `aalt`, `ccmp`, `frac`, `locl`, `ordn`, `salt`, `ss01` to `ss05` and `sups`, and none of them touches the zero; checked on the DM Mono 1.000 files with fontTools). It stays: it tells `0` from `O` in ids and paths.
+
+| Instead of | Write | Rule |
+|---|---|---|
+| `0.0697 h` | `4 min` | 3 |
+| `1.5083 GB` | `1.51 GB` | 2 |
+| `2026-11-16T07:58:08+09:00` | `2026-11-16 07:58 KST` | 5 |
+| a blank cell | `none` | 7 |
+| `3f9a1c07d2e84b56a0c1e7d9b4f25c83a6e01d47` | `3f9a1c07d2` with the full value on hover | 6 |
+
+The Humem Tower is the first consumer (`fmt_hours` and `fmt_num`). The rules are text only: no class or token in the system implements them, and a consumer formats its own values. The reasons are in `docs/decisions.md`, Data display.
 
 ## Badges
 
