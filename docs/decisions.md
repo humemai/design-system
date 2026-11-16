@@ -168,6 +168,10 @@ The system said only that numeric cells are right aligned in DM Mono, so the fir
 - **Slashed zero.** DM Mono's zero is slashed in the font itself: no `GSUB` feature touches it (checked with fontTools on the 1.000 files) and a render of `0O0` shows the slash. A request for a plain zero has nothing to switch on, and the slash is useful in ids and paths.
 - **Not here.** A formatter library or CSS for the rules (a consumer owns its formatting until two consumers need the same code), a currency rule (no HumemAI display shows money yet), and localisation of the decimal point.
 
+## Grouping, wide tables, cut text and units (2026-11-16)
+
+The Humem Tower's host cards put each 24 hour plot between two rows at the full width of the card, so a reader could not tell which row a plot explained (humem-ops#347), and a screenshot review of every Tower page found the same family of problems elsewhere (humem-ops#348): tables whose answer columns are off the right edge on a phone, titles cut mid-sentence, units that wrap alone, names that break inside. The fixes are written as README rules because they hold for every consumer: Grouping (a hairline for groups, a figure inside the row it explains, less space inside than between), one Tables bullet (the answering columns first), and two additions to Data display (rule 4, a non-breaking space between number and unit; rule 6, where an identifier may break and how a long title is cut). Rejected: a rule between every row (it hides the groups), and stacking a table into cards on a phone (the system already decided that a keyboard-reachable scroller is compliant, see Tables; the defect was the hidden answer column and no cue that the table scrolls). The cue, an edge shadow on `.hm-table-scroll`, is CSS and goes in its own change with a version bump.
+
 ## Words: tagline and descriptor (2026-09-27)
 
 - **Tagline:** "Machines with human-like memory". Taewoon's line, first on the LinkedIn page. It's short, and it ties to the name (human + memory) and to the mark (a head holding a graph). On banners and cards it's the headline, in Newsreader.
