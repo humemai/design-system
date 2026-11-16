@@ -157,6 +157,17 @@ No study of short text flowed into columns; Carbon states no maximum page width 
 
 From the platform findings: text spacing (WCAG 1.4.12, line height 1.5 and the rest, nothing clipped), target sizes at 320px and 1280px (and 44px under `(any-pointer: coarse)`; `any-pointer` is the better gate than width), a focused control not covered by a sticky header (2.4.11), `text-wrap: wrap` forced in the overflow tests, forced-colours borders, `text-wrap: balance` for headings, `svh` for a hero, subgrid for card internals, and a computed-size test that no text token shrinks between 1280 and 640 beyond the 17px to 16px step.
 
+## Data display (2026-11-16)
+
+The system said only that numeric cells are right aligned in DM Mono, so the first consumer that formatted durations and counts (the Humem Tower, `fmt_hours` and `fmt_num`) had to choose alone (humemai/design-system#20). The README's Data display section writes nine rules down. It is text only: no CSS, JS or token changed, so a vendored copy and its hash do not change and `version` stays 0.2.0.
+
+- **Two kinds of display.** A status line rounds to 3 significant digits so a reader sees the order of magnitude. A result table shows the digits its analysis supports, copied from the result file with the interval. Rounding a result for display is the mistake this split prevents, so the README names the exception in rule 2 instead of leaving it to the reader.
+- **Durations by size.** `0.0697 h` is 4 min: below an hour a minute is the unit a person acts on, from 1 h to 10 h one decimal separates 1.5 h from 2 h, and from 10 h a whole hour is enough. Over 48 h days read better than hours.
+- **Where I follow a source and where not.** Right alignment: GOV.UK Design System table. Space before an SI symbol and the GB and GiB definitions: NIST. ISO 8601 for dates. WCAG 1.4.1 for status colour. I deviate on purpose in two places: percent is attached (`12%`, as GOV.UK writes it, where SI writes `12 %`), and thousands take a comma where SI uses a thin space (the comma is the form readers already know on a screen). GOV.UK's 12 hour clock and its `3,500kg` are not followed.
+- **Sources read and not used.** The Nielsen Norman Group pages on data tables and table design, Carbon's data table usage and style pages and Material's data table page said nothing on alignment, units or empty cells, or returned no body text. The BIPM SI brochure page held no text (the PDF was not read), and ISO 80000-1 is paywalled. None of them is cited.
+- **Slashed zero.** DM Mono's zero is slashed in the font itself: no `GSUB` feature touches it (checked with fontTools on the 1.000 files) and a render of `0O0` shows the slash. A request for a plain zero has nothing to switch on, and the slash is useful in ids and paths.
+- **Not here.** A formatter library or CSS for the rules (a consumer owns its formatting until two consumers need the same code), a currency rule (no HumemAI display shows money yet), and localisation of the decimal point.
+
 ## Words: tagline and descriptor (2026-09-27)
 
 - **Tagline:** "Machines with human-like memory". Taewoon's line, first on the LinkedIn page. It's short, and it ties to the name (human + memory) and to the mark (a head holding a graph). On banners and cards it's the headline, in Newsreader.
