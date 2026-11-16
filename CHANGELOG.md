@@ -4,6 +4,7 @@ Versions are in `pyproject.toml`. A tag is the bare version (`0.2.0`, no `v`) on
 
 ## Unreleased
 
+- README: "Grouping" (humemai/design-system#26): a hairline separates groups, not rows; a figure that explains a row lives in that row's value column; less space inside a thing than between things. One bullet under Tables (the answering columns first) and two additions to Data display (rule 4: a non-breaking space between number and unit; rule 6: where an identifier may break and how a long title is cut). Docs only: nothing under `css/`, `js/` or `scripts/`, no version bump.
 - README: "Data display" (humemai/design-system#20): how numbers, units, durations, dates, identifiers and empty values are shown, and the slashed zero of DM Mono. Docs only: nothing under `css/`, `js/`, `logo/`, `assets/` or `export/` changed, so a vendored copy's hash and `VERSION.md` stay as they are and no consumer needs `scripts/vendor-all.sh` for it. The next release that changes a vendored file carries this line.
 
 ## 0.2.0 (2026-11-12)
