@@ -2,6 +2,10 @@
 
 Versions are in `pyproject.toml`. A tag is the bare version (`0.2.0`, no `v`) on the commit that carries it, and a vendored copy records it in its `VERSION.md`.
 
+## Unreleased
+
+- README: "Data display" (humemai/design-system#20): how numbers, units, durations, dates, identifiers and empty values are shown, and the slashed zero of DM Mono. Docs only: nothing under `css/`, `js/`, `logo/`, `assets/` or `export/` changed, so a vendored copy's hash and `VERSION.md` stay as they are and no consumer needs `scripts/vendor-all.sh` for it. The next release that changes a vendored file carries this line.
+
 ## 0.2.0 (2026-11-12)
 
 Layout across screen sizes (humemai/design-system#18).
