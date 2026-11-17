@@ -15,6 +15,9 @@ it) or Playwright's own. These are the headless-checkable requirements of the RE
   scroller-named      an element that scrolls sideways is a .hm-table-scroll with role,
                       tabindex 0 and an aria-label
   table-wrapper       a wide table scrolls inside its wrapper at 320px (and the wrapper is there)
+  scroll-cue          a table that scrolls shows a shadow on the right edge of its scroller while more is to
+                      the right, and none at the far end or when it does not scroll, in light and in dark
+                      (pixels of a screenshot, beside a body row)
   card-heights        cards in .hm-card-grid share one height and their last lines one baseline
   measure             prose is the measure (68ch) wide on a wide screen, and a split's content
                       column is never wider than it
@@ -27,10 +30,12 @@ it) or Playwright's own. These are the headless-checkable requirements of the RE
 
 The bad variants are the same page with one defect each; --self-test runs them all.
 """
+import io
 import re
 import sys
 from pathlib import Path
 
+from PIL import Image
 from playwright.sync_api import sync_playwright
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -40,7 +45,7 @@ WIDTHS = (320, 360, 768, 1280, 2560)
 # 200% is what WCAG 1.4.4 asks for. At 300% a single word of a card no longer fits
 # 320px whatever the grid does, so it is not a check of this system.
 ROOTS = (100, 200)
-CHECKS = ("no-sideways-scroll", "scroller-named", "table-wrapper", "card-heights", "measure",
+CHECKS = ("no-sideways-scroll", "scroller-named", "table-wrapper", "scroll-cue", "card-heights", "measure",
           "container-width", "container-base", "size-classes", "page-container")
 
 # One defect each: (old, new) text replacements on the good page, every anchor present once.
@@ -48,6 +53,7 @@ BAD = {
     "no-sideways-scroll": [('<p><button class="hm-hint"', '<div style="width: 600px; height: 4px; background: red"></div><p><button class="hm-hint"')],
     "scroller-named": [('<div class="hm-table-scroll" id="scroller" role="region" tabindex="0" aria-label="Wide results">', '<div class="hm-table-scroll" id="scroller">')],
     "table-wrapper": [('<div class="hm-table-scroll" id="scroller"', '<div class="hm-table-scroll" id="scroller" style="overflow: visible"')],
+    "scroll-cue": [('<div class="hm-table-scroll" id="scroller" role="region"', '<div class="hm-table-scroll" id="scroller" style="background-image: none" role="region"')],
     "card-heights": [('<div class="hm-card-grid" id="cards">', '<div class="hm-card-grid" id="cards" style="grid-auto-rows: auto">')],
     "measure": [('<p class="hm-measure" id="prose">', '<p id="prose">')],
     "container-width": [('<div class="hm-fit" id="fit">', '<div style="display: flex"><div class="hm-fit" id="fit">'),
@@ -125,6 +131,37 @@ SCROLLERS = """() => [...document.querySelectorAll('body *')].filter(e => {
 PAGE_SCROLL = "() => [document.documentElement.scrollWidth, document.documentElement.clientWidth]"
 
 
+# The pixel at the right edge of the scroller, beside a body row (the row's top padding, where no text is), against the scroller's own fill.
+CUE_PROBE = """() => { const w = document.querySelector('#scroller'); w.scrollIntoView({block: 'center'}); const r = w.getBoundingClientRect(); const td = w.querySelector('tbody td').getBoundingClientRect();
+  return {x: r.right - 4, y: td.top + 1, fill: getComputedStyle(w).backgroundColor, over: w.scrollWidth > w.clientWidth + 1, left: w.scrollLeft, max: w.scrollWidth - w.clientWidth}; }"""
+
+
+def cue_strength(run):
+    """How far the right edge differs from the scroller's fill (the largest channel difference, 0 to 255), and the facts it was measured with."""
+    probe = run.js(CUE_PROBE)
+    png = run.page.screenshot(clip={"x": probe["x"], "y": probe["y"], "width": 1, "height": 1})
+    pixel = Image.open(io.BytesIO(png)).convert("RGB").getpixel((0, 0))
+    fill = [int(v) for v in re.findall(r"\d+", probe["fill"])[:3]]
+    return max(abs(a - b) for a, b in zip(pixel, fill)), probe
+
+
+def scroll_cue(run):
+    for theme in ("light", "dark"):
+        run.js("t => document.documentElement.setAttribute('data-theme', t)", theme)
+        for width in (320, 360, 2560):
+            run.at(width)
+            run.js("() => { document.querySelector('#scroller').scrollLeft = 0 }")
+            start, facts = cue_strength(run)
+            if facts["over"]:
+                run.check("scroll-cue", start >= 12, f"{theme}, {width}px: the table scrolls but its right edge is {start} from the fill at scrollLeft 0 (a cue is at least 12)")
+                run.js("() => { const w = document.querySelector('#scroller'); w.scrollLeft = w.scrollWidth }")
+                end, _ = cue_strength(run)
+                run.check("scroll-cue", end <= 3, f"{theme}, {width}px: scrolled to the far end the right edge is {end} from the fill (no cue there)")
+            else:
+                run.check("scroll-cue", start <= 3, f"{theme}, {width}px: the table does not scroll but its right edge is {start} from the fill (no cue without overflow)")
+    run.js("() => { document.documentElement.removeAttribute('data-theme'); window.scrollTo(0, 0) }")
+
+
 def run_checks(run):
     run.load()
     for root in ROOTS:
@@ -144,6 +181,9 @@ def run_checks(run):
       return {inWrapper: !!document.querySelector('#table').closest('.hm-table-scroll'), overflowX: s.overflowX, sw: w.scrollWidth, cw: w.clientWidth}; }""")
     run.check("table-wrapper", t["inWrapper"] and t["overflowX"] in ("auto", "scroll") and t["sw"] > t["cw"],
               f"320px: table in wrapper={t['inWrapper']}, wrapper overflow-x={t['overflowX']}, scrollWidth {t['sw']} vs clientWidth {t['cw']} (the table must be wider than the screen and scroll inside its wrapper)")
+
+    # The scroll cue: a shadow on the right edge of the scroller while more is to the right.
+    scroll_cue(run)
 
     # Cards share one height; their last lines sit on one baseline.
     for width in (360, 768, 1280, 2560):
