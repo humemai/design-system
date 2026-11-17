@@ -2,10 +2,17 @@
 
 Versions are in `pyproject.toml`. A tag is the bare version (`0.2.0`, no `v`) on the commit that carries it, and a vendored copy records it in its `VERSION.md`.
 
-## Unreleased
+## 0.2.1 (2026-11-17)
 
-- README: "Grouping" (humemai/design-system#26): a hairline separates groups, not rows; a figure that explains a row lives in that row's value column; less space inside a thing than between things. One bullet under Tables (the answering columns first) and two additions to Data display (rule 4: a non-breaking space between number and unit; rule 6: where an identifier may break and how a long title is cut). Docs only: nothing under `css/`, `js/` or `scripts/`, no version bump.
-- README: "Data display" (humemai/design-system#20): how numbers, units, durations, dates, identifiers and empty values are shown, and the slashed zero of DM Mono. Docs only: nothing under `css/`, `js/`, `logo/`, `assets/` or `export/` changed, so a vendored copy's hash and `VERSION.md` stay as they are and no consumer needs `scripts/vendor-all.sh` for it. The next release that changes a vendored file carries this line.
+The scroll cue on the table scroller (humem-ops#348, U1). This release also carries the two docs-only entries below it, which had no version of their own.
+
+- Changed `.hm-table-scroll` (`css/components.css`): while more of the table is to the right, the scroller shows a shadow on its right edge. Pure CSS: the `background` shorthand becomes `background-color` plus two background layers (a surface-coloured cover with `background-attachment: local`, and the shadow with `scroll`), no markup, class or token is new. The shadow is `--hm-text` at 22%, so it reads in light and dark. A page that sets the `background` shorthand on the scroller removes it. A header cell has its own fill and covers the shadow, so it shows beside the body rows.
+- Added a check: `scroll-cue` in `scripts/check_layout.py` reads one pixel of a screenshot at the right edge of the scroller, at 320, 360 and 2560px, in light and dark: a shadow at scrollLeft 0 when the table scrolls, none at the far end and none when nothing scrolls. Its bad variant removes the background image.
+- README: a "Scroll cue" bullet under Tables. Reason and rejected options in `docs/decisions.md`.
+- README: "Grouping" (humemai/design-system#26): a hairline separates groups, not rows; a figure that explains a row lives in that row's value column; less space inside a thing than between things. One bullet under Tables (the answering columns first) and two additions to Data display (rule 4: a non-breaking space between number and unit; rule 6: where an identifier may break and how a long title is cut). Docs only: nothing under `css/`, `js/` or `scripts/`.
+- README: "Data display" (humemai/design-system#20): how numbers, units, durations, dates, identifiers and empty values are shown, and the slashed zero of DM Mono. Docs only: nothing under `css/`, `js/`, `logo/`, `assets/` or `export/` changed, so a vendored copy's hash and `VERSION.md` stay as they are and no consumer needs `scripts/vendor-all.sh` for it. Released in 0.2.1.
+
+A copy is behind by its hash: every consumer needs `scripts/vendor-all.sh`.
 
 ## 0.2.0 (2026-11-12)
 
