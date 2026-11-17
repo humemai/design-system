@@ -132,7 +132,7 @@ PAGE_SCROLL = "() => [document.documentElement.scrollWidth, document.documentEle
 
 
 # The pixel at the right edge of the scroller, beside a body row (the row's top padding, where no text is), against the scroller's own fill.
-CUE_PROBE = """() => { const w = document.querySelector('#scroller'); const r = w.getBoundingClientRect(); const td = w.querySelector('tbody td').getBoundingClientRect();
+CUE_PROBE = """() => { const w = document.querySelector('#scroller'); w.scrollIntoView({block: 'center'}); const r = w.getBoundingClientRect(); const td = w.querySelector('tbody td').getBoundingClientRect();
   return {x: r.right - 4, y: td.top + 1, fill: getComputedStyle(w).backgroundColor, over: w.scrollWidth > w.clientWidth + 1, left: w.scrollLeft, max: w.scrollWidth - w.clientWidth}; }"""
 
 
@@ -159,7 +159,7 @@ def scroll_cue(run):
                 run.check("scroll-cue", end <= 3, f"{theme}, {width}px: scrolled to the far end the right edge is {end} from the fill (no cue there)")
             else:
                 run.check("scroll-cue", start <= 3, f"{theme}, {width}px: the table does not scroll but its right edge is {start} from the fill (no cue without overflow)")
-    run.js("() => document.documentElement.removeAttribute('data-theme')")
+    run.js("() => { document.documentElement.removeAttribute('data-theme'); window.scrollTo(0, 0) }")
 
 
 def run_checks(run):
