@@ -221,7 +221,7 @@ How a view shows what belongs together, so that a reader can tell which block a 
 
 ## Using it
 
-Five repositories carry a vendored copy: humem.ai, audit-ready-memory, humemai-docs, arcadedb-embedded-python, and the Humem Tower (`humem-ops`, which sits under `../tae898/` and is written as a path in `CONSUMERS`). After a change here is merged, update all of them from the checkouts in one run, then commit in each:
+Four repositories carry a vendored copy: humem.ai, audit-ready-memory, humemai-docs, and the Humem Tower (`humem-ops`, which sits under `../tae898/` and is written as a path in `CONSUMERS`). `arcadedb-embedded-python` is archived and no longer a consumer. After a change here is merged, update all of them from the checkouts in one run, then commit in each:
 
 ```bash
 scripts/vendor-all.sh --check   # which copies are behind, and which files differ

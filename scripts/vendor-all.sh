@@ -19,7 +19,6 @@ CONSUMERS=(
   "humem.ai:public/brand"
   "audit-ready-memory:docs/brand"
   "humemai-docs:brand"
-  "arcadedb-embedded-python:bindings/python/docs/brand"
   "../tae898/humem-ops:src/controlplane/tower/static/brand"
 )
 
