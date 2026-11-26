@@ -23,7 +23,7 @@ css/tokens.css      colour ramps, neutrals, type, spacing, and the semantic laye
 css/mkdocs.css      the theme for MkDocs Material documentation sites
 css/base.css        opt-in base rules: the focus ring, the skip link (.hm-skip) and one reduced-motion rule
 css/layout.css      opt-in layout: the page container (and its wide variant), the measure, the column grid, the split and the container-query box
-css/components.css  shared components: the card grid (equal-height rows) and its card, the "?" hint, the table and its scroller, and the badge
+css/components.css  shared components: the card grid (equal-height rows) and its card (linked or static), label and value rows, tabs, the "?" hint, the table and its scroller, and the badge
 js/hint.js          the hint's behaviour (placing the bubble, hover) and termHint for a glossary; a plain ES module, no dependency
 assets/fonts.html   the Google Fonts block for plain HTML pages
 logo/               SVG masters: mark, tile, avatar, wordmark, lockups (light, dark, white)
@@ -90,7 +90,7 @@ How a page holds its content at every screen size. The classes are in `css/layou
 </main>
 ```
 
-`scripts/check_layout.py` loads `scripts/fixtures/layout/page.html` in headless Chrome and measures: the page never scrolls sideways at 320, 360, 768, 1280 and 2560px wide and at a 100% and a 200% root font size; only a named `.hm-table-scroll` scrolls sideways, and a wide table scrolls inside it; the scroll cue shows at the right edge of a scrolling table, not at its far end and not when nothing scrolls, in light and in dark; cards in a grid share one height; prose is the measure wide; a container is not 0 wide at 320px, and the page fits with every `@container` rule removed; the size classes switch at exactly 600 and 1000px (1600 is named and nothing reads it yet); the container is 1180px of content at 1440 and 2560. It is not yet checked: text spacing (WCAG 1.4.12), target sizes at 320px, focus under a sticky header, forced colours. Those are listed in `docs/decisions.md`.
+`scripts/check_layout.py` loads `scripts/fixtures/layout/page.html` in headless Chrome and measures: the page never scrolls sideways at 320, 360, 768, 1280 and 2560px wide and at a 100% and a 200% root font size; only a named `.hm-table-scroll` scrolls sideways, and a wide table scrolls inside it; the scroll cue shows at the right edge of a scrolling table, not at its far end and not when nothing scrolls, in light and in dark; cards in a grid share one height; tab links are a control height tall and only the open one is marked; label and value rows stay in two columns; a static card does not move under the pointer; prose is the measure wide; a container is not 0 wide at 320px, and the page fits with every `@container` rule removed; the size classes switch at exactly 600 and 1000px (1600 is named and nothing reads it yet); the container is 1180px of content at 1440 and 2560. It is not yet checked: text spacing (WCAG 1.4.12), target sizes at 320px, focus under a sticky header, forced colours. Those are listed in `docs/decisions.md`.
 
 ## Behaviour
 
@@ -148,6 +148,37 @@ head.append("Est. ", termHintElement(GLOSSARY, "est", "the estimate"));
 ```
 
 `scripts/check.py` checks the hint's contrast pairings in both themes, and `scripts/test-hint.mjs` checks that `js/hint.js` parses as a module and that `termHint` gives the documented markup. Hover, pinning, placement and the sizes are measured in a browser (numbers in humemai/design-system#12).
+
+## Tabs
+
+`.hm-tabs` is a row of links under a page title that switches between views of one list or one subject: a software page with a documentation view and a research view, or open issues and open pull requests. They are plain links with one URL each, with no script and no ARIA tab roles, so a keyboard and a screen reader use them as the links they are. Name the `nav`, and mark the open link with `aria-current="page"`: it is semibold with a 2px brand rule under it, as in a main nav. A count is optional and goes in `.hm-tabs__count`.
+
+```html
+<nav class="hm-tabs" aria-label="Software views">
+  <ul>
+    <li><a href="/software/docs" aria-current="page">Documentation <span class="hm-tabs__count">12</span></a></li>
+    <li><a href="/software/research">Research <span class="hm-tabs__count">3</span></a></li>
+  </ul>
+</nav>
+```
+
+Each link is `--hm-control-h` tall (Behaviour, "Touch targets"). Links that do not fit one line wrap as whole links, and a name wraps inside its link only when it alone is wider than the screen. Views that a script swaps on one URL are another component (ARIA tabs), which the system does not have.
+
+## Label and value rows
+
+`.hm-kv` is a definition list shown as rows, the label in a narrow muted column and the value beside it. A value that wraps stays in its own column, and a screen reader reads the pairs. Use it for the facts of one thing (version, license, status), inside a card or on a page. Data that compares several things is a table. The label column is 8.5rem, or 40% of the list when that is less. Keep one `dt` and one `dd` per row.
+
+A card of rows is not a link, so it takes `.hm-card--static` beside `.hm-card`: the same box with no hover lift, its rows sized to their content, and a direct `span` as plain text.
+
+```html
+<div class="hm-card hm-card--static">
+  <h3>Release</h3>
+  <dl class="hm-kv">
+    <dt>Version</dt><dd>1.2.0</dd>
+    <dt>License</dt><dd>Apache-2.0</dd>
+  </dl>
+</div>
+```
 
 ## Base rules
 

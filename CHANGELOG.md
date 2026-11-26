@@ -2,6 +2,19 @@
 
 Versions are in `pyproject.toml`. A tag is the bare version (`0.2.0`, no `v`) on the commit that carries it, and a vendored copy records it in its `VERSION.md`.
 
+## 0.3.0 (2026-11-27)
+
+Tabs, label and value rows, and the static card, promoted from the Humem Tower (humemai/design-system#16, #17).
+
+- Added `.hm-tabs` and `.hm-tabs__count` (`css/components.css`): a named `nav` of links, the open one marked with `aria-current="page"`.
+- Added `.hm-kv`: a definition list as label and value rows, the label column `min(8.5rem, 40%)`.
+- Added `.hm-card--static`: a card that is not a link, with no hover lift and rows sized to their content.
+- Added checks: `tabs`, `key-values` and `static-card` in `scripts/check_layout.py`, each with a bad variant.
+- README: "Tabs" and "Label and value rows". Reasons in `docs/decisions.md`.
+- No token and no existing rule changed.
+
+A copy is behind by its hash: every consumer needs `scripts/vendor-all.sh`.
+
 ## 0.2.1 (2026-11-17)
 
 The scroll cue on the table scroller (humem-ops#348, U1). This release also carries the two docs-only entries below it, which had no version of their own.
