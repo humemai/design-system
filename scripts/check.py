@@ -48,7 +48,9 @@ PAIRS = [
     # (its head). The badge: text-muted on surface (plain), on-brand on brand,
     # danger on surface, tint-text on tint, border-control, danger and brand on
     # bg (its border against the page). The skip link: link on surface, and a
-    # focus border on bg and surface.
+    # focus border on bg and surface. Tabs: text and link-hover on bg, text-muted
+    # for the count, a brand rule and a focus ring on bg. Label and value rows and
+    # the static card: text and text-muted on surface-muted.
 ]
 
 ASSETS = {

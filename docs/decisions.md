@@ -178,6 +178,16 @@ The Humem Tower's tables show two columns on a phone and nothing says there are 
 
 Known limit: a header cell has its own fill (`--hm-surface-sunken`) and covers the shadow, so the cue shows beside the body rows only. A shadow above the cells needs an overlay element, which means new markup in every consumer, or a table wrapper in a grid, which changes how the table sizes. Rejected: stacking the table into cards on a phone (decided against on 2026-11-16); a left shadow (the reader starts at the left edge and knows what is behind it); scroll-driven animations (they need a newer browser than layered backgrounds do); a script that toggles a class on scroll (the cue is pure CSS on purpose).
 
+## Tabs, label and value rows, and the static card (2026-11-27)
+
+The Humem Tower built three pieces in its own stylesheet (`tw-tabs`, `tw-kv`, `tw-card`) that humem.ai can use on a software or research page, so they move here (humemai/design-system#16, #17) as `.hm-tabs`, `.hm-kv` and `.hm-card--static`.
+
+- **Links, not ARIA tabs.** Each view has its own URL, so the markup is a named `nav` of links and the open one carries `aria-current="page"`. ARIA tab roles promise arrow-key behaviour that needs a script, and no consumer swaps views in place.
+- **Names.** The count is `.hm-tabs__count`, an element of the component like `.hm-hint__bubble`, not a free `.hm-count` that would suggest a count anywhere.
+- **Changed from the Tower.** The link height is `--hm-control-h`, not the Tower's own control token. A link may wrap inside itself when it alone is wider than the screen: the Tower kept `white-space: nowrap` and added a 320px query for its longest link, while `overflow-wrap: anywhere` covers any name at any root font size. The label column of `.hm-kv` is `min(8.5rem, 40%)`, which follows the width of the card with no media query, where the Tower had a `minmax(5.5rem, 8.5rem)` track and a `(width < 30rem)` query, a width that is not one of the four size classes.
+- **Left in the Tower.** The second level of tabs (`tw-tabs--sub`), the wide and the two-column label lists (`tw-kv--wide`, `tw-kv--cols`), the card title and the footer line have one consumer each. They stay there until a second one needs them.
+- **Checks.** `tabs`, `key-values` and `static-card` in `scripts/check_layout.py`, each with a bad variant. No new colour pairing: the three use pairings that `scripts/check.py` already holds.
+
 ## Words: tagline and descriptor (2026-09-27)
 
 - **Tagline:** "Machines with human-like memory". Taewoon's line, first on the LinkedIn page. It's short, and it ties to the name (human + memory) and to the mark (a head holding a graph). On banners and cards it's the headline, in Newsreader.

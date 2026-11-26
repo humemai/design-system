@@ -27,6 +27,13 @@ it) or Playwright's own. These are the headless-checkable requirements of the RE
                       (the rem range queries equal the px queries they replaced, at the default font size)
   page-container      the container is 1180px of content at 1440 and 2560, centred, and its wide
                       variant is the Tower's frame
+  tabs                every .hm-tabs link is a control height tall (44px below 1000, 36 from 1000) and only
+                      the open one (aria-current="page") has the brand rule under it and semibold text; a
+                      count is muted
+  key-values          every .hm-kv value stands in its own column to the right of its label, all values on one
+                      left edge, the label column at most 40% of the list or 8.5rem, no label wider than it
+  static-card         a .hm-card--static does not move or change its border under the pointer, its rows take
+                      their own height in a stretched card, and a span in it is plain text
 
 The bad variants are the same page with one defect each; --self-test runs them all.
 """
@@ -46,7 +53,7 @@ WIDTHS = (320, 360, 768, 1280, 2560)
 # 320px whatever the grid does, so it is not a check of this system.
 ROOTS = (100, 200)
 CHECKS = ("no-sideways-scroll", "scroller-named", "table-wrapper", "scroll-cue", "card-heights", "measure",
-          "container-width", "container-base", "size-classes", "page-container")
+          "container-width", "container-base", "size-classes", "page-container", "tabs", "key-values", "static-card")
 
 # One defect each: (old, new) text replacements on the good page, every anchor present once.
 BAD = {
@@ -62,6 +69,9 @@ BAD = {
                        ('<div class="hm-fit__pair">', '<div class="base-wide"></div><div class="hm-fit__pair">')],
     "size-classes": [('</style>', '@media (width >= 62.5rem) { :root { --hm-control-h: 3rem } }\n  </style>')],
     "page-container": [('</style>', '.hm-container { max-inline-size: 90rem }\n  </style>')],
+    "tabs": [('</style>', '.hm-tabs a[aria-current="page"] { border-block-end-color: transparent }\n  </style>')],
+    "key-values": [('<dl class="hm-kv" id="kv">', '<dl class="hm-kv" id="kv" style="display: block">')],
+    "static-card": [('<div class="hm-card hm-card--static" id="static">', '<div class="hm-card" id="static">')],
 }
 
 
@@ -230,6 +240,54 @@ def run_checks(run):
         ok = (abs(r["frame"]["content"] - want_content) <= 0.5 and abs(r["frame"]["left"] - r["frame"]["right"]) <= 1
               and abs(r["wide"]["content"] - want_wide) <= 0.5 and abs(r["wide"]["left"] - r["wide"]["right"]) <= 1)
         run.check("page-container", ok, f"{width}px: content {r['frame']['content']:.0f} (want {want_content:.0f}), wide {r['wide']['content']:.0f} (want {want_wide:.0f}), margins {r['frame']['left']:.0f}/{r['frame']['right']:.0f}")
+
+    # Tabs: control height, one marked link, a muted count.
+    for width in (320, 999, 1000, 2560):
+        run.at(width)
+        t = run.js("""() => { const probe = document.createElement('i'); probe.style.cssText = 'color: var(--hm-brand); background: var(--hm-text-muted)'; document.body.appendChild(probe);
+          const brand = getComputedStyle(probe).color, muted = getComputedStyle(probe).backgroundColor; probe.remove();
+          return {brand, muted, links: [...document.querySelectorAll('#tabs a')].map(a => { const s = getComputedStyle(a); const c = a.querySelector('.hm-tabs__count');
+            return {current: a.getAttribute('aria-current') === 'page', height: a.getBoundingClientRect().height, rule: s.borderBottomColor, ruleWidth: s.borderBottomWidth, weight: s.fontWeight,
+                    count: getComputedStyle(c).color}; })}; }""")
+        want = 36 if width >= 1000 else 44
+        links = t["links"]
+        short = [round(a["height"], 1) for a in links if a["height"] < want - 0.5]
+        marked = [a for a in links if a["rule"] == t["brand"] and a["ruleWidth"] == "2px" and a["weight"] == "600"]
+        clear = [a for a in links if not a["current"] and a["rule"] == "rgba(0, 0, 0, 0)" and a["weight"] == "400"]
+        ok = (len(links) == 3 and not short and len(marked) == 1 and marked[0]["current"] and len(clear) == 2
+              and all(a["count"] == t["muted"] for a in links) and (width < 1000 or abs(links[0]["height"] - want) <= 0.5))
+        run.check("tabs", ok, f"{width}px: want links {want}px tall, one marked; got {[(round(a['height'], 1), a['current'], a['rule'], a['weight']) for a in links]}, short {short}")
+
+    # Label and value rows: two columns at every width, the label column bounded.
+    for root in ROOTS:
+        for width in (320, 360, 768, 1280):
+            run.at(width, root)
+            k = run.js("""() => { const d = document.querySelector('#kv'); const rem = parseFloat(getComputedStyle(document.documentElement).fontSize);
+              const dts = [...d.querySelectorAll('dt')], dds = [...d.querySelectorAll('dd')];
+              return {rem, width: d.getBoundingClientRect().width, rows: dts.map((t, i) => { const a = t.getBoundingClientRect(), b = dds[i].getBoundingClientRect();
+                return {dtRight: a.right, ddLeft: b.left, dtWidth: a.width, over: t.scrollWidth - t.clientWidth, overlap: Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top), ddOver: dds[i].scrollWidth - dds[i].clientWidth}; })}; }""")
+            cap = min(8.5 * k["rem"], 0.4 * k["width"])
+            rows = k["rows"]
+            ok = (len(rows) == 3 and all(r["ddLeft"] >= r["dtRight"] and r["overlap"] > 0 and r["dtWidth"] <= cap + 0.5 and r["over"] <= 0 and r["ddOver"] <= 0 for r in rows)
+                  and len({round(r["ddLeft"], 1) for r in rows}) == 1)
+            run.check("key-values", ok, f"{width}px at {root}% root: label cap {cap:.0f}px, rows {[{k2: round(v) for k2, v in r.items()} for r in rows]}")
+
+    # A static card: no hover lift, rows sized to content, a span is plain text.
+    for width in (360, 1280):
+        run.at(width)
+        run.js("() => { document.querySelector('#static').scrollIntoView({block: 'center'}) }")
+        run.page.mouse.move(0, 0)
+        run.page.wait_for_timeout(300)
+        style = "() => { const s = getComputedStyle(document.querySelector('#static')); return [s.transform, s.borderTopColor] }"
+        before = run.js(style)
+        run.page.hover("#static")
+        run.page.wait_for_timeout(300)  # longer than the card's 160ms transition
+        after = run.js(style)
+        c = run.js("""() => { const kv = document.querySelector('#kv').getBoundingClientRect(), n = document.querySelector('#note'), card = document.querySelector('#static');
+          return {gap: n.getBoundingClientRect().top - kv.bottom, noteColor: getComputedStyle(n).color, text: getComputedStyle(card).color, want: parseFloat(getComputedStyle(card).rowGap)}; }""")
+        ok = before == after and after[0] == "none" and abs(c["gap"] - c["want"]) <= 0.5 and c["noteColor"] == c["text"]
+        run.check("static-card", ok, f"{width}px: hover {before} to {after}; the note is {c['gap']:.0f}px under the list (row gap {c['want']:.0f}), span {c['noteColor']} against text {c['text']}")
+    run.page.mouse.move(0, 0)
 
     # With every @container block removed the single-column base still fits.
     run.load(strip=True)
